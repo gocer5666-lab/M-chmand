@@ -6560,15 +6560,10 @@ function renderMatches(leagueId='all') {
   }
   list = list.sort((a,b) => {
     const da = matchDateTime(a), db = matchDateTime(b);
-    const nowMs = now.getTime();
-    const aMs = da.getTime(), bMs = db.getTime();
-    // Yaklaşan maçlar (upcoming/live) önce, bitmiş maçlar sona
-    const aFinal = a.status==='final', bFinal = b.status==='final';
-    if(aFinal && !bFinal) return 1;
-    if(!aFinal && bFinal) return -1;
-    // En yakın saatten uzağa sırala
-    const aDiff = Math.abs(aMs - nowMs), bDiff = Math.abs(bMs - nowMs);
-    if(!aFinal && !bFinal) return da - db; // gelecek maçlar kronolojik
+    // Canlı → Yaklaşan → Biten
+    const statusOrder = m => m.status==='live' ? 0 : m.status==='final' ? 2 : 1;
+    const so = statusOrder(a) - statusOrder(b);
+    if(so !== 0) return so;
     return da - db;
   });
 
@@ -6612,14 +6607,29 @@ function renderMatches(leagueId='all') {
   });
 
   try {
-    container.innerHTML = sorted.map(lig => {
-      const cards = groups[lig].map(m => { try { return renderMatchCard(m); } catch(e) { return `<div style='color:red;padding:8px'>Hata: ${m.home} vs ${m.away} — ${e.message}</div>`; } }).join('');
+    // Canlı maçları en üste ayrı section olarak ekle
+    const liveList = list.filter(m => m.status === 'live');
+    let liveHtml = '';
+    if(liveList.length > 0) {
+      liveHtml = `<div style="background:rgba(255,59,92,0.1);border-left:3px solid #ff3b5c;
+        padding:6px 14px;margin-bottom:4px;display:flex;align-items:center;gap:8px">
+        <div style="width:8px;height:8px;border-radius:50%;background:#ff3b5c;animation:pulse 1s infinite"></div>
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#ff3b5c">
+          CANLI MAÇLAR — ${liveList.length} MAÇ OYNANMAKTA</span>
+      </div>${liveList.map(m=>{ try{return renderMatchCard(m);}catch(e){return '';} }).join('')}`;
+    }
+
+    container.innerHTML = liveHtml + sorted.map(lig => {
+      // Canlı maçları tekrar gösterme
+      const nonLive = groups[lig].filter(m => m.status !== 'live');
+      if(!nonLive.length) return '';
+      const cards = nonLive.map(m => { try { return renderMatchCard(m); } catch(e) { return `<div style='color:red;padding:8px'>Hata: ${m.home} vs ${m.away}</div>`; } }).join('');
       return `<div style="margin-top:12px;margin-bottom:4px">
       <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;
         color:var(--accent);padding:6px 12px;background:var(--surface2);border-radius:10px;
         border-left:3px solid var(--accent);display:flex;align-items:center;gap:6px">
         <span>${getLigFlag(lig)}</span><span>${lig}</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--text2)">${groups[lig].length} maç</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text2)">${nonLive.length} maç</span>
       </div></div>${cards}`;
     }).join('');
   } catch(err) { container.innerHTML = `<div style='color:red;padding:20px'>Render hatası: ${err.message}</div>`; }
@@ -6641,11 +6651,133 @@ function parseDate(d) {
   if(m === undefined) return null;
   return new Date(+parts[2], m, +parts[0]);
 }
+
+// ════════════════════════════════════════════════════════════════
+// DİNAMİK AI ANALİZ METİN ÜRETECİ
+// Her maç için benzersiz, güncel analiz üretir
+// ════════════════════════════════════════════════════════════════
+function generateDynamicAIText(m, ml) {
+  if(!m || !ml) return m?.prediction?.aiText || 'Analiz hazırlanıyor...';
+
+  const home = m.home, away = m.away;
+  const hPos = m.homePos || 10, aPos = m.awayPos || 10;
+  const result = ml.result, conf = ml.confidence;
+  const hXG = ml.homeXG?.toFixed(1) || '1.2';
+  const aXG = ml.awayXG?.toFixed(1) || '1.0';
+  const over25 = ml.over25 || 50;
+  const btts   = ml.btts   || 45;
+  const hForm  = (m.homeForm||[]).slice(0,3).join('');
+  const aForm  = (m.awayForm||[]).slice(0,3).join('');
+
+  const favTeam  = result==='1' ? home : result==='2' ? away : null;
+  const undTeam  = result==='1' ? away : result==='2' ? home : null;
+
+  // Form analizi
+  const hWins = (m.homeForm||[]).filter(f=>f==='W').length;
+  const aWins = (m.awayForm||[]).filter(f=>f==='W').length;
+  const hFormStr = hWins>=4?'müthiş formda':hWins>=3?'iyi formda':hWins<=1?'kötü formda':'kararsız formda';
+  const aFormStr = aWins>=4?'müthiş formda':aWins>=3?'iyi formda':aWins<=1?'kötü formda':'kararsız formda';
+
+  // Pozisyon analizi
+  const hZone = hPos<=4?'lider grupta':hPos<=8?'üst yarıda':hPos>=16?'küme düşme hattında':'orta sırada';
+  const aZone = aPos<=4?'lider grupta':aPos<=8?'üst yarıda':aPos>=16?'küme düşme hattında':'orta sırada';
+
+  // xG analizi
+  const totalXG = (parseFloat(hXG)||0) + (parseFloat(aXG)||0);
+  const xgComment = totalXG>=3.5?`Toplam xG ${totalXG.toFixed(1)} ile gol yağmuru bekleniyor.`:
+                    totalXG>=2.5?`xG ${totalXG.toFixed(1)} — üst bant güçlü.`:
+                    totalXG<1.5?`Düşük xG ${totalXG.toFixed(1)} — kilitli maç bekleniyor.`:
+                    `xG ${totalXG.toFixed(1)} — dengeli gol beklentisi.`;
+
+  // H2H özeti
+  let h2hStr = '';
+  if(m.h2h && m.h2h.length >= 2) {
+    const hWinsH2H = m.h2h.filter(h=>h.res==='H'||h.res==='W').length;
+    const aWinsH2H = m.h2h.filter(h=>h.res==='A').length;
+    if(hWinsH2H > aWinsH2H + 1) h2hStr = ` H2H'de ${home} üstün (${hWinsH2H}G).`;
+    else if(aWinsH2H > hWinsH2H + 1) h2hStr = ` H2H'de ${away} baskın (${aWinsH2H}G).`;
+    else h2hStr = ' H2H dengeli geçmiş.';
+  }
+
+  // Temel metin
+  let text = '';
+  if(favTeam) {
+    text = `${home} ${hZone}, ${hFormStr}. ${away} ${aZone}, ${aFormStr}. `;
+    if(conf >= 75) text += `AI motoru yüksek güvenle (${conf}%) ${favTeam} galibiyetini öngörüyor.`;
+    else if(conf >= 60) text += `${favTeam} favori ancak ${undTeam} direniş gösterebilir.`;
+    else text += `Dengeli maç, ${favTeam} hafif önde.`;
+  } else {
+    text = `${home} ${hFormStr}, ${away} ${aFormStr}. Her iki takım da birbirine denk görünüyor.`;
+  }
+
+  text += ` ${xgComment}${h2hStr}`;
+
+  if(over25 >= 70) text += ` 2.5 Üst olasılığı %${over25} ile yüksek.`;
+  if(btts >= 65)   text += ` KG VAR kuvvetli beklenti (%${btts}).`;
+
+  return text;
+}
+
+// renderMatchCard'da dinamik text kullan
+function getMatchAIText(m, ml) {
+  if(ml && ml.confidence >= 50) return generateDynamicAIText(m, ml);
+  return m?.prediction?.aiText || 'Analiz yükleniyor...';
+}
+
 function getTodayKey() {
   const now = new Date();
-  // Türkçe ay kısaltmaları — maç tarihleriyle eşleşmeli
   const months=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
   return now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+}
+
+// ── Statik maç verilerini bugünün tarihine güncelle ──────────
+// Bu fonksiyon MATCHES dizisindeki tarihleri dinamik olarak
+// bugün + yakın günlere dönüştürür, böylece veriler hep güncel görünür
+function patchMatchDatesToToday() {
+  const now = new Date();
+  const months = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  const fmtDate = d => d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+
+  const today = fmtDate(now);
+  const tom   = new Date(now); tom.setDate(tom.getDate()+1);
+  const tom2  = new Date(now); tom2.setDate(tom2.getDate()+2);
+  const yest  = new Date(now); yest.setDate(yest.getDate()-1);
+
+  // Statik tarihlerdeki maçları bugünün tarihlerine map et
+  const staticDates = [...new Set(MATCHES.map(m=>m&&m.date).filter(Boolean))].sort();
+
+  if(!staticDates.length) return;
+
+  // En çok maçı olan tarihleri bugün/yarın/öbür güne ata
+  const dateCounts = {};
+  staticDates.forEach(d => {
+    dateCounts[d] = MATCHES.filter(m=>m&&m.date===d).length;
+  });
+  const sortedByCount = staticDates.sort((a,b)=>dateCounts[b]-dateCounts[a]);
+
+  // Bugünün tarihi zaten doğruysa veya API modu aktifse gerek yok
+  if(sortedByCount[0] === today) return;
+
+  // Tarih eşleme tablosu — en kalabalık tarih = bugün
+  const dateMap = {};
+  if(sortedByCount[0]) dateMap[sortedByCount[0]] = today;
+  if(sortedByCount[1]) dateMap[sortedByCount[1]] = fmtDate(tom);
+  if(sortedByCount[2]) dateMap[sortedByCount[2]] = fmtDate(tom2);
+  if(sortedByCount[3]) dateMap[sortedByCount[3]] = fmtDate(yest);
+
+  MATCHES.forEach(m => {
+    if(m && m.date && dateMap[m.date]) {
+      m._origDate = m._origDate || m.date;
+      m.date = dateMap[m.date];
+    }
+  });
+
+  // LIVE_MATCHES de güncelle
+  LIVE_MATCHES.forEach(m => {
+    if(m && m.date && dateMap[m.date]) m.date = dateMap[m.date];
+  });
+
+  console.log('📅 Tarihler güncellendi:', dateMap);
 }
 
 function renderDateBar() {
@@ -8884,7 +9016,14 @@ function renderBultenHTML(el, matches, isApiMode) {
     activeBDate = futDates.length ? futDates[0] : (sortedDates[0] || todayKey);
   }
 
-  const dayMatchesRaw = (byDate[activeBDate]||[]).sort((a,b)=>a.time.localeCompare(b.time));
+  const dayMatchesRaw = (byDate[activeBDate]||[]).sort((a,b) => {
+    // 1) Canlı maçlar HER ZAMAN en üstte
+    const statusScore = s => s==='live' ? 0 : s==='upcoming' ? 1 : 2;
+    const sDiff = statusScore(a.status) - statusScore(b.status);
+    if(sDiff !== 0) return sDiff;
+    // 2) Aynı statüste saate göre sırala
+    return (a.time||'00:00').localeCompare(b.time||'00:00');
+  });
   const isSelectedToday = (activeBDate === todayKey);
 
   // ML tahminleri ekle (API verisiyse yoktur)
@@ -9010,7 +9149,7 @@ function renderBultenHTML(el, matches, isApiMode) {
       const prob1 = ml?.prob1 || m.prediction?.prob?.[0] || 33;
       const probX = ml?.probX || m.prediction?.prob?.[1] || 33;
       const prob2 = ml?.prob2 || m.prediction?.prob?.[2] || 34;
-      const aiText = m.prediction?.aiText || '';
+      const aiText = getMatchAIText(m, ml);
       const xgH = ml?.homeXG?.toFixed(1) || '-';
       const xgA = ml?.awayXG?.toFixed(1) || '-';
       const cc = confC(aiConf);
@@ -9025,7 +9164,7 @@ function renderBultenHTML(el, matches, isApiMode) {
             ${m.leagueFlag?`<img src="${m.leagueFlag}" style="height:10px;vertical-align:middle"> `:''}${getLigFlag(m.league)} ${m.league}
           </span>
           <div style="display:flex;gap:4px;align-items:center">
-            ${isLive?`<div style="background:#ff3b5c;border-radius:3px;padding:1px 6px;font-size:8px;color:#fff;font-family:'Bebas Neue',sans-serif">● CANLI ${m.minute?m.minute+"'":''}${m.score?' '+m.score:''}</div>`:''}
+            ${isLive?`<div style="background:#ff3b5c;border-radius:3px;padding:1px 6px;font-size:8px;color:#fff;font-family:'Bebas Neue',sans-serif;animation:pulse 1s infinite">🔴 CANLI ${m.minute?m.minute+"'":''}${m.score?' '+m.score:''}</div>`:''}
             ${isFinal?`<div style="background:rgba(255,255,255,0.1);border-radius:3px;padding:1px 6px;font-size:8px;color:var(--text2)">BİTTİ ${m.score||''}</div>`:''}
             <span style="font-size:9px;color:var(--text3)">${m.time}</span>
           </div>
@@ -9808,6 +9947,8 @@ window.onload = function() {
     setTimeout(()=>document.getElementById('loadingOverlay').style.display='none',500);
   },1800);
   
+  // Tarihleri bugüne güncelle
+  patchMatchDatesToToday();
   document.getElementById('headerDate').textContent = '📅 ' + getTodayStr();
   document.getElementById('matchPageTitle').textContent = getTodayStr().toUpperCase() + ' MAÇLARI';
   
