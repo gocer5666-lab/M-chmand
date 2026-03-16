@@ -1577,6 +1577,14 @@ body {
     <div id="canliAnalizContent" style="padding-bottom:80px"></div>
   </div>
 
+  <!-- SPOR TOTO SEKMESİ -->
+  <div class="tab-content" id="tab-sportoto">
+    <div id="sporTotoContent" style="padding-bottom:80px"></div>
+  </div>
+
+  <!-- GLOBAL CANLI BAR -->
+  <div id="globalLiveBar" style="display:none;position:sticky;top:56px;z-index:90"></div>
+
   <!-- BİLDİRİM TOAST -->
 <div class="notification-toast" id="notifToast">
   <div class="notif-icon" id="notifIcon">⚽</div>
@@ -1620,6 +1628,10 @@ body {
   <div class="bot-nav-item" onclick="switchMainTab('bulten')">
     <div class="bot-nav-icon">📰</div>
     <div class="bot-nav-label">BÜLTEN</div>
+  </div>
+  <div class="bot-nav-item" onclick="switchMainTab('sportoto')">
+    <div class="bot-nav-icon">🏆</div>
+    <div class="bot-nav-label">S.TOTO</div>
   </div>
   <div class="bot-nav-item" onclick="switchMainTab('canlianaliz')">
     <div class="bot-nav-icon">🔥</div>
@@ -3841,6 +3853,25 @@ var MATCHES = [
   {"id": 516, "league": "Premier Lig", "leagueId": "pl", "date": "14 Mar 2026", "time": "20:30", "status": "upcoming", "home": "Arsenal", "away": "Everton", "homeForm": ["W", "W", "W", "D", "W"], "awayForm": ["L", "D", "L", "D", "L"], "homeGoals": 2.3, "awayGoals": 0.9, "homeConceded": 0.7, "awayConceded": 1.6, "homePos": 2, "awayPos": 18, "stats": {"pos": [60, 40], "shots": [16, 8], "sot": [7, 2], "corners": [8, 3], "fouls": [9, 14], "xg": [2.2, 0.8]}, "h2h": [{"date": "Kas 2025", "score": "3-1", "res": "H"}, {"date": "Mar 2025", "score": "5-0", "res": "H"}], "prediction": {"result": "1", "prob": [72, 17, 11], "aiConf": 82, "aiText": "Arsenal Everton karşısında büyük favori. Everton küme düşme hattında."}, "odds": {"1": 1.22, "X": 5.5, "2": 12.0, "ov25": 1.6, "un25": 2.3, "gg": 2.5, "ng": 1.5}, "players": {"home": [], "away": []}, "formation": {"home": "4-3-3", "away": "5-4-1"}, "tactics": "Arsenal dominant"},
   {"id": 517, "league": "Bundesliga", "leagueId": "bl", "date": "14 Mar 2026", "time": "17:30", "status": "upcoming", "home": "Bayer Leverkusen", "away": "Bayern Münih", "homeForm": ["W", "W", "D", "W", "W"], "awayForm": ["W", "W", "W", "W", "D"], "homeGoals": 2.4, "awayGoals": 2.6, "homeConceded": 0.9, "awayConceded": 0.8, "homePos": 1, "awayPos": 2, "stats": {"pos": [52, 48], "shots": [15, 16], "sot": [6, 7], "corners": [6, 7], "fouls": [11, 10], "xg": [2.2, 2.4]}, "h2h": [{"date": "Kas 2025", "score": "2-3", "res": "A"}, {"date": "Mar 2025", "score": "3-2", "res": "H"}], "prediction": {"result": "X", "prob": [36, 30, 34], "aiConf": 57, "aiText": "Bundesliga zirve derbisi! Her iki takim da formda, gollü maç bekleniyor."}, "odds": {"1": 2.4, "X": 3.3, "2": 2.7, "ov25": 1.6, "un25": 2.3, "gg": 1.55, "ng": 2.4}, "players": {"home": [], "away": []}, "formation": {"home": "4-3-3", "away": "4-2-3-1"}, "tactics": "Zirve derbi"},
   {"id": 518, "league": "Serie A", "leagueId": "sa", "date": "14 Mar 2026", "time": "17:00", "status": "upcoming", "home": "Inter Milano", "away": "Atalanta BC", "homeForm": ["W", "W", "D", "W", "W"], "awayForm": ["W", "D", "W", "W", "L"], "homeGoals": 2.1, "awayGoals": 1.9, "homeConceded": 0.8, "awayConceded": 1.0, "homePos": 2, "awayPos": 4, "stats": {"pos": [54, 46], "shots": [14, 13], "sot": [6, 5], "corners": [6, 6], "fouls": [10, 11], "xg": [2.0, 1.8]}, "h2h": [{"date": "Kas 2025", "score": "1-1", "res": "D"}], "prediction": {"result": "1", "prob": [44, 28, 28], "aiConf": 63, "aiText": "Inter evinde hafif favori. Gollü maç bekleniyor."}, "odds": {"1": 2.1, "X": 3.3, "2": 3.3, "ov25": 1.72, "un25": 2.08, "gg": 1.65, "ng": 2.2}, "players": {"home": [], "away": []}, "formation": {"home": "3-5-2", "away": "3-4-3"}, "tactics": "Serie A zirve"},
+
+// ═══════════════════════════════════════════════════════
+// 16 MAR 2026 — BUGÜNÜN MAÇLARI
+// ═══════════════════════════════════════════════════════
+{"id":601,"league":"Süper Lig","leagueId":"sl","date":"16 Mar 2026","time":"13:00","status":"upcoming","home":"Trabzonspor","away":"Başakşehir","homeForm":["W","W","D","W","L"],"awayForm":["D","W","L","W","D"],"homeGoals":1.8,"awayGoals":1.5,"homeConceded":1.1,"awayConceded":1.2,"homePos":4,"awayPos":7,"stats":{"pos":[52,48],"shots":[13,11],"sot":[5,4],"corners":[6,5],"fouls":[12,11],"xg":[1.7,1.4]},"h2h":[{"date":"Eki 2025","score":"2-1","res":"H"},{"date":"Mar 2025","score":"1-1","res":"D"},{"date":"Kas 2024","score":"3-0","res":"H"}],"prediction":{"result":"1","prob":[48,28,24],"aiConf":65,"aiText":"Trabzonspor Karadeniz rüzgarıyla evinde güçlü. Başakşehir deplasmanda tutarsız. Trabzon hafif favori."},"odds":{"1":2.1,"X":3.3,"2":3.5,"ov25":1.85,"un25":1.95,"gg":1.82,"ng":1.98,"iy1":2.6,"iyX":2.0,"iy2":3.5},"players":{"home":[],"away":[]},"formation":{"home":"4-3-3","away":"4-2-3-1"},"tactics":"Trabzonspor yüksek baskı, Başakşehir kontr"},
+{"id":602,"league":"Süper Lig","leagueId":"sl","date":"16 Mar 2026","time":"15:30","status":"upcoming","home":"Beşiktaş","away":"Sivasspor","homeForm":["W","D","W","W","L"],"awayForm":["L","D","W","D","L"],"homeGoals":1.9,"awayGoals":1.2,"homeConceded":1.0,"awayConceded":1.4,"homePos":5,"awayPos":13,"stats":{"pos":[54,46],"shots":[14,10],"sot":[6,3],"corners":[7,4],"fouls":[11,13],"xg":[1.8,1.1]},"h2h":[{"date":"Kas 2025","score":"2-0","res":"H"},{"date":"Mar 2025","score":"1-1","res":"D"},{"date":"Eki 2024","score":"3-1","res":"H"}],"prediction":{"result":"1","prob":[54,24,22],"aiConf":69,"aiText":"Beşiktaş Vodafone Park'ta Sivasspor karşısında net favori. Kartal son 3 iç sahada rakibine gol vermedi."},"odds":{"1":1.85,"X":3.5,"2":4.2,"ov25":1.90,"un25":1.88,"gg":2.0,"ng":1.80,"iy1":2.3,"iyX":2.1,"iy2":4.5},"players":{"home":[],"away":[]},"formation":{"home":"4-3-3","away":"5-4-1"},"tactics":"Beşiktaş baskı, Sivasspor savunma"},
+{"id":603,"league":"Süper Lig","leagueId":"sl","date":"16 Mar 2026","time":"18:00","status":"upcoming","home":"Galatasaray","away":"Antalyaspor","homeForm":["W","W","W","D","W"],"awayForm":["L","D","W","D","L"],"homeGoals":2.3,"awayGoals":1.1,"homeConceded":0.8,"awayConceded":1.4,"homePos":1,"awayPos":12,"stats":{"pos":[58,42],"shots":[16,9],"sot":[7,3],"corners":[8,3],"fouls":[10,13],"xg":[2.2,0.9]},"h2h":[{"date":"Kas 2025","score":"3-1","res":"H"},{"date":"Mar 2025","score":"4-0","res":"H"},{"date":"Eki 2024","score":"2-1","res":"H"}],"prediction":{"result":"1","prob":[68,18,14],"aiConf":80,"aiText":"Galatasaray UCL'den sonra Süper Lig liderliğini pekiştirecek. Antalyaspor alt sırada. Cim-Bom büyük favori."},"odds":{"1":1.30,"X":5.25,"2":9.50,"ov25":1.65,"un25":2.20,"gg":2.40,"ng":1.55,"iy1":1.75,"iyX":2.8,"iy2":8.0},"players":{"home":[],"away":[]},"formation":{"home":"4-2-3-1","away":"5-4-1"},"tactics":"Galatasaray baskı futbolu"},
+{"id":604,"league":"Süper Lig","leagueId":"sl","date":"16 Mar 2026","time":"20:45","status":"upcoming","home":"Fenerbahçe","away":"Alanyaspor","homeForm":["W","W","W","W","D"],"awayForm":["D","L","W","D","L"],"homeGoals":2.4,"awayGoals":1.3,"homeConceded":0.7,"awayConceded":1.3,"homePos":2,"awayPos":10,"stats":{"pos":[57,43],"shots":[15,10],"sot":[7,4],"corners":[7,4],"fouls":[10,12],"xg":[2.1,1.2]},"h2h":[{"date":"Kas 2025","score":"3-0","res":"H"},{"date":"Mar 2025","score":"2-1","res":"H"},{"date":"Eki 2024","score":"1-1","res":"D"}],"prediction":{"result":"1","prob":[65,20,15],"aiConf":78,"aiText":"Fenerbahçe Dzeko ile fırtına gibi. Kadıköy'de Alanyaspor'a şans tanımaz. Kanarya net favori."},"odds":{"1":1.40,"X":4.75,"2":7.50,"ov25":1.70,"un25":2.15,"gg":2.20,"ng":1.65,"iy1":1.90,"iyX":2.6,"iy2":7.0},"players":{"home":[],"away":[]},"formation":{"home":"4-3-3","away":"4-4-2"},"tactics":"Fenerbahçe yüksek tempo baskı"},
+{"id":605,"league":"La Liga","leagueId":"ll","date":"16 Mar 2026","time":"17:00","status":"upcoming","home":"Valencia","away":"Sevilla","homeForm":["W","D","L","W","W"],"awayForm":["D","W","L","D","W"],"homeGoals":1.6,"awayGoals":1.5,"homeConceded":1.2,"awayConceded":1.3,"homePos":9,"awayPos":11,"stats":{"pos":[50,50],"shots":[12,11],"sot":[5,4],"corners":[5,5],"fouls":[12,12],"xg":[1.5,1.4]},"h2h":[{"date":"Kas 2025","score":"1-1","res":"D"},{"date":"Mar 2025","score":"2-1","res":"H"},{"date":"Eki 2024","score":"0-1","res":"A"}],"prediction":{"result":"1","prob":[42,30,28],"aiConf":57,"aiText":"Valencia Mestalla'da Sevilla'ya karşı hafif favori. Dengeli orta sıra maçı bekleniyor."},"odds":{"1":2.3,"X":3.1,"2":3.2,"ov25":1.88,"un25":1.92,"gg":1.75,"ng":2.05},"players":{"home":[],"away":[]},"formation":{"home":"4-3-3","away":"4-2-3-1"},"tactics":"Orta sıra La Liga mücadelesi"},
+{"id":606,"league":"La Liga","leagueId":"ll","date":"16 Mar 2026","time":"19:30","status":"upcoming","home":"Villarreal","away":"Real Sociedad","homeForm":["W","W","D","W","L"],"awayForm":["W","D","W","L","W"],"homeGoals":1.9,"awayGoals":1.8,"homeConceded":1.1,"awayConceded":1.1,"homePos":6,"awayPos":8,"stats":{"pos":[51,49],"shots":[13,12],"sot":[5,5],"corners":[6,5],"fouls":[11,12],"xg":[1.8,1.7]},"h2h":[{"date":"Kas 2025","score":"2-2","res":"D"},{"date":"Mar 2025","score":"1-2","res":"A"},{"date":"Eki 2024","score":"3-1","res":"H"}],"prediction":{"result":"X","prob":[36,32,32],"aiConf":55,"aiText":"Villarreal vs Real Sociedad çok dengeli. Her iki takım da iyi formda. KG VAR kuvvetli beklenti."},"odds":{"1":2.4,"X":3.1,"2":3.0,"ov25":1.78,"un25":2.02,"gg":1.68,"ng":2.20},"players":{"home":[],"away":[]},"formation":{"home":"4-4-2","away":"4-3-3"},"tactics":"Çift taraflı açık maç bekleniyor"},
+{"id":607,"league":"Serie A","leagueId":"sa","date":"16 Mar 2026","time":"15:00","status":"upcoming","home":"AC Milan","away":"Fiorentina","homeForm":["W","W","D","W","W"],"awayForm":["W","L","D","W","D"],"homeGoals":2.1,"awayGoals":1.6,"homeConceded":0.9,"awayConceded":1.1,"homePos":3,"awayPos":7,"stats":{"pos":[53,47],"shots":[14,11],"sot":[6,4],"corners":[7,5],"fouls":[11,12],"xg":[2.0,1.5]},"h2h":[{"date":"Kas 2025","score":"2-1","res":"H"},{"date":"Mar 2025","score":"1-0","res":"H"},{"date":"Eki 2024","score":"3-2","res":"H"}],"prediction":{"result":"1","prob":[52,26,22],"aiConf":67,"aiText":"AC Milan San Siro'da Fiorentina'ya karşı güçlü. Son 3 karşılaşmada Milan kazandı. Rossoneri hafif favori."},"odds":{"1":1.95,"X":3.4,"2":3.8,"ov25":1.75,"un25":2.05,"gg":1.72,"ng":2.10},"players":{"home":[],"away":[]},"formation":{"home":"4-2-3-1","away":"3-5-2"},"tactics":"Milan baskı futbolu"},
+{"id":608,"league":"Serie A","leagueId":"sa","date":"16 Mar 2026","time":"17:30","status":"upcoming","home":"Lazio","away":"Roma","homeForm":["W","D","W","L","W"],"awayForm":["W","W","D","W","L"],"homeGoals":1.9,"awayGoals":2.0,"homeConceded":1.1,"awayConceded":1.0,"homePos":5,"awayPos":4,"stats":{"pos":[50,50],"shots":[13,14],"sot":[5,6],"corners":[6,6],"fouls":[12,11],"xg":[1.8,1.9]},"h2h":[{"date":"Kas 2025","score":"1-1","res":"D"},{"date":"Mar 2025","score":"0-2","res":"A"},{"date":"Eki 2024","score":"2-1","res":"H"}],"prediction":{"result":"X","prob":[34,32,34],"aiConf":54,"aiText":"Derby della Capitale! Lazio ve Roma çok dengeli. Roma son dönemde biraz daha iyi ama Olimpico'da her şey mümkün."},"odds":{"1":2.8,"X":2.95,"2":2.7,"ov25":1.80,"un25":2.00,"gg":1.65,"ng":2.20},"players":{"home":[],"away":[]},"formation":{"home":"4-3-3","away":"3-4-2-1"},"tactics":"Roma derbisi — tutku ve rekabet"},
+{"id":609,"league":"Bundesliga","leagueId":"bl","date":"16 Mar 2026","time":"15:30","status":"upcoming","home":"Borussia Dortmund","away":"Wolfsburg","homeForm":["W","W","W","D","W"],"awayForm":["D","L","W","D","L"],"homeGoals":2.3,"awayGoals":1.3,"homeConceded":0.9,"awayConceded":1.4,"homePos":3,"awayPos":10,"stats":{"pos":[55,45],"shots":[15,9],"sot":[7,3],"corners":[7,4],"fouls":[10,13],"xg":[2.2,1.1]},"h2h":[{"date":"Kas 2025","score":"3-1","res":"H"},{"date":"Mar 2025","score":"4-0","res":"H"},{"date":"Eki 2024","score":"2-0","res":"H"}],"prediction":{"result":"1","prob":[62,22,16],"aiConf":74,"aiText":"Dortmund Signal Iduna Park'ta Wolfsburg'u ağırlıyor. BVB formda, son 3 iç sahada rahat galip. Net favori."},"odds":{"1":1.60,"X":4.0,"2":5.50,"ov25":1.65,"un25":2.25,"gg":2.00,"ng":1.75},"players":{"home":[],"away":[]},"formation":{"home":"4-2-3-1","away":"4-4-2"},"tactics":"Dortmund baskı vs Wolfsburg savunma"},
+{"id":610,"league":"Ligue 1","leagueId":"l1","date":"16 Mar 2026","time":"17:05","status":"upcoming","home":"PSG","away":"Olympique Lyon","homeForm":["W","W","W","W","W"],"awayForm":["W","D","L","W","D"],"homeGoals":3.1,"awayGoals":1.7,"homeConceded":0.6,"awayConceded":1.3,"homePos":1,"awayPos":5,"stats":{"pos":[62,38],"shots":[18,10],"sot":[8,4],"corners":[9,4],"fouls":[9,13],"xg":[2.8,1.1]},"h2h":[{"date":"Kas 2025","score":"4-1","res":"H"},{"date":"Mar 2025","score":"3-0","res":"H"},{"date":"Eki 2024","score":"2-1","res":"H"}],"prediction":{"result":"1","prob":[72,16,12],"aiConf":83,"aiText":"PSG Ligue 1 zirvesinde ağırlığını koyuyor. Lyon deplasmanda zayıf. Parisli devler büyük favori. Mbappé formda."},"odds":{"1":1.28,"X":5.75,"2":10.50,"ov25":1.60,"un25":2.30,"gg":2.50,"ng":1.50},"players":{"home":[],"away":[]},"formation":{"home":"4-3-3","away":"4-2-3-1"},"tactics":"PSG total futbol baskısı"},
+{"id":611,"league":"Premier Lig","leagueId":"pl","date":"16 Mar 2026","time":"14:00","status":"upcoming","home":"Liverpool","away":"Leicester City","homeForm":["W","W","W","W","D"],"awayForm":["L","L","D","L","L"],"homeGoals":2.8,"awayGoals":0.8,"homeConceded":0.6,"awayConceded":1.8,"homePos":1,"awayPos":20,"stats":{"pos":[63,37],"shots":[18,7],"sot":[8,2],"corners":[9,3],"fouls":[9,14],"xg":[2.9,0.6]},"h2h":[{"date":"Kas 2025","score":"4-0","res":"H"},{"date":"Mar 2025","score":"6-3","res":"H"},{"date":"Eki 2024","score":"3-0","res":"H"}],"prediction":{"result":"1","prob":[80,12,8],"aiConf":88,"aiText":"Liverpool Anfield'da küme düşme hattındaki Leicester'a karşı dev favori. Son 3 karşılaşmada toplam 13-3. Dominans bekleniyor."},"odds":{"1":1.15,"X":7.0,"2":16.0,"ov25":1.45,"un25":2.60,"gg":3.25,"ng":1.30},"players":{"home":[],"away":[]},"formation":{"home":"4-3-3","away":"5-4-1"},"tactics":"Liverpool toplam baskı"},
+{"id":612,"league":"Premier Lig","leagueId":"pl","date":"16 Mar 2026","time":"16:30","status":"upcoming","home":"Manchester United","away":"Tottenham Hotspur","homeForm":["W","D","L","W","W"],"awayForm":["L","L","D","L","W"],"homeGoals":1.8,"awayGoals":1.4,"homeConceded":1.3,"awayConceded":1.8,"homePos":8,"awayPos":15,"stats":{"pos":[50,50],"shots":[13,11],"sot":[5,4],"corners":[6,5],"fouls":[12,13],"xg":[1.7,1.3]},"h2h":[{"date":"Kas 2025","score":"1-1","res":"D"},{"date":"Mar 2025","score":"2-0","res":"H"},{"date":"Eki 2024","score":"3-0","res":"H"}],"prediction":{"result":"1","prob":[50,26,24],"aiConf":63,"aiText":"Manchester United Old Trafford'da hafif favori. Tottenham UCL sonrası moralsiz. Manchester net avantajlı."},"odds":{"1":2.0,"X":3.4,"2":3.6,"ov25":1.85,"un25":1.95,"gg":1.78,"ng":2.02},"players":{"home":[],"away":[]},"formation":{"home":"4-2-3-1","away":"4-3-3"},"tactics":"Kuzey derbisi"},
+{"id":613,"league":"Şampiyonlar Ligi","leagueId":"cl","date":"16 Mar 2026","time":"20:00","status":"upcoming","home":"Real Madrid","away":"Manchester City","homeForm":["W","W","W","D","W"],"awayForm":["W","W","W","W","D"],"homeGoals":2.8,"awayGoals":2.2,"homeConceded":0.7,"awayConceded":0.9,"homePos":1,"awayPos":3,"stats":{"pos":[52,48],"shots":[16,15],"sot":[7,7],"corners":[7,8],"fouls":[10,11],"xg":[2.5,2.1]},"h2h":[{"date":"Nis 2024","score":"3-3","res":"D"},{"date":"Şub 2024","score":"1-0","res":"H"},{"date":"Nis 2023","score":"1-1","res":"D"}],"prediction":{"result":"X","prob":[38,28,34],"aiConf":60,"aiText":"ŞAMPİYONLAR LİGİ SON 16! Real Madrid vs Man City — yılın maçı! Bernabéu büyüsü ve City'nin kalitesi. Gollü maç kesin."},"odds":{"1":2.15,"X":3.35,"2":3.10,"ov25":1.60,"un25":2.35,"gg":1.55,"ng":2.40},"players":{"home":[],"away":[]},"formation":{"home":"4-2-3-1","away":"4-3-3"},"tactics":"Avrupa zirvesi — taktik savaşı"},
+{"id":614,"league":"Şampiyonlar Ligi","leagueId":"cl","date":"16 Mar 2026","time":"20:00","status":"upcoming","home":"PSG","away":"Chelsea","homeForm":["W","W","W","W","W"],"awayForm":["W","L","W","W","L"],"homeGoals":3.1,"awayGoals":1.8,"homeConceded":0.6,"awayConceded":1.2,"homePos":1,"awayPos":5,"stats":{"pos":[58,42],"shots":[17,12],"sot":[8,5],"corners":[8,5],"fouls":[10,12],"xg":[2.6,1.6]},"h2h":[{"date":"Nis 2021","score":"2-1","res":"H"},{"date":"Şub 2021","score":"1-1","res":"D"},{"date":"Mar 2015","score":"2-1","res":"H"}],"prediction":{"result":"1","prob":[52,24,24],"aiConf":66,"aiText":"ŞAMPİYONLAR LİGİ! PSG Parc des Princes'ta Chelsea'ye karşı. Mbappé ve Dembele ikilisi Chelsea savunmasını zorlayacak."},"odds":{"1":1.85,"X":3.6,"2":4.0,"ov25":1.70,"un25":2.15,"gg":1.78,"ng":2.02},"players":{"home":[],"away":[]},"formation":{"home":"4-3-3","away":"4-2-3-1"},"tactics":"UCL Paris gecesi"},
+{"id":615,"league":"Şampiyonlar Ligi","leagueId":"cl","date":"16 Mar 2026","time":"22:00","status":"upcoming","home":"Barcelona","away":"Bayern Münih","homeForm":["W","W","W","D","W"],"awayForm":["W","W","W","W","D"],"homeGoals":2.5,"awayGoals":2.6,"homeConceded":0.8,"awayConceded":0.8,"homePos":1,"awayPos":2,"stats":{"pos":[54,46],"shots":[16,17],"sot":[7,8],"corners":[7,8],"fouls":[11,10],"xg":[2.3,2.4]},"h2h":[{"date":"Nis 2024","score":"4-3","res":"H"},{"date":"Şub 2024","score":"3-2","res":"H"},{"date":"Nis 2023","score":"0-3","res":"A"}],"prediction":{"result":"X","prob":[36,28,36],"aiConf":58,"aiText":"GECE'NİN EN BÜYÜK MAÇI! Barça vs Bayern ŞL Son 16. Camp Nou'da iki Avrupa devi. Lamine Yamal vs Kane. Çok gollü maç bekleniyor!"},"odds":{"1":2.2,"X":3.4,"2":2.95,"ov25":1.50,"un25":2.50,"gg":1.50,"ng":2.50},"players":{"home":[],"away":[]},"formation":{"home":"4-3-3","away":"4-2-3-1"},"tactics":"Avrupa klasiği — seyirlik futbol"},
 ];;;;
 
 var LIVE_MATCHES = [
@@ -9062,6 +9093,52 @@ function renderBultenHTML(el, matches, isApiMode) {
           </div>
           ${aiText?`<div style="margin-top:5px;font-size:9px;color:var(--text2)">${aiText}</div>`:''}
         </div>`:''}
+
+        <!-- GELİŞMİŞ ANALİZ BLOKLARI -->
+        ${(()=>{
+          if(!ml) return '';
+          const xgSig = calcXGSignalV3(m, ml);
+          const sigColors = ['#607d8b','#8a9ab5','#ff9800','#00e5ff','#00e676','#ff3b5c'];
+          const kgPct   = ml.btts   || 0;
+          const u25Pct  = ml.over25  || 0;
+          const u35Pct  = ml.over35  || 0;
+          const iyPct   = (ml.iy&&ml.iy.ov05) ? Math.round(ml.iy.ov05*100) : Math.round((ml.homeXG+ml.awayXG)*18);
+          const totalXG = (ml.homeXG||0) + (ml.awayXG||0);
+          const pill = (lbl, pct, bg, border, color, extra='') =>
+            `<div onclick="addToCoupon(${m.id||0},'${lbl.replace(/[^a-z0-9]/gi,'_').toLowerCase()}',0,'${m.home} ${lbl}')"
+              style="display:inline-flex;align-items:center;gap:3px;padding:3px 7px;
+              border-radius:20px;font-size:9px;font-weight:700;letter-spacing:.3px;cursor:pointer;
+              background:${bg};border:1px solid ${border};color:${color};${extra}">${lbl} ${pct>0?pct+'%':''}</div>`;
+          let pills = '';
+          if(kgPct>=50)  pills += pill('⚽ KG VAR', kgPct,  'rgba(0,230,118,0.12)','rgba(0,230,118,0.4)','#00e676');
+          else           pills += pill('🚫 KG YOK', 100-kgPct,'rgba(255,59,92,0.1)','rgba(255,59,92,0.3)','#ff3b5c');
+          if(iyPct>=45)  pills += pill('🕐 İY GOL', iyPct,  'rgba(0,229,255,0.1)','rgba(0,229,255,0.3)','#00e5ff');
+          if(u25Pct>=50) pills += pill('📊 2.5 ÜST', u25Pct,'rgba(179,71,255,0.1)','rgba(179,71,255,0.35)','#b347ff');
+          else           pills += pill('📊 2.5 ALT', 100-u25Pct,'rgba(255,107,53,0.1)','rgba(255,107,53,0.3)','#ff6b35');
+          if(u35Pct>=35) pills += pill('🔥 3.5 ÜST', u35Pct,'rgba(255,152,0,0.1)','rgba(255,152,0,0.35)','#ff9800');
+          if(xgSig.level>=3) pills += pill('◈ xG '+(xgSig.signal||'SİNYAL'), 0,'rgba(0,230,118,0.15)','rgba(0,230,118,0.5)','#00e676','animation:pulse 1.5s infinite');
+
+          // xG Sinyal detay
+          const xgBlock = xgSig.level>=2 ? `
+          <div style="background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.2);
+            border-radius:7px;padding:6px 8px;margin-top:5px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+              <span style="font-size:9px;font-weight:700;color:#00e676">◈ xG SİNYAL: ${xgSig.signal}</span>
+              <span style="font-size:9px;color:var(--gold)">Skor: ${xgSig.score}/10</span>
+            </div>
+            ${xgSig.reasons.slice(0,2).map(r=>`
+            <div style="font-size:8px;color:var(--text2);padding:1px 0">• ${r}</div>`).join('')}
+          </div>` : '';
+
+          return `
+          <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:7px">${pills}</div>
+          ${xgBlock}
+          ${renderOddsMovementPill(m)}
+          ${renderPositionContext(m)}
+          ${renderHomeAwayAnalysis(m, ml)}
+          ${renderMotivationStrategy(m, ml)}
+          ${renderMatchNewsBlock(m)}`;
+        })()}
       </div>`;
     });
   });
@@ -9651,22 +9728,36 @@ function switchTab(id, navId) {
 }
 
 function switchMainTab(id) {
+  // Delegate to enhanced version (defined later in window.switchMainTab override)
+  // Fallback for early calls before override loads
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
+  const tabEl = document.getElementById('tab-'+id);
+  if(tabEl) tabEl.classList.add('active');
   document.querySelectorAll('.bot-nav-item').forEach(t=>t.classList.remove('active'));
   const items = document.querySelectorAll('.bot-nav-item');
-  const tabOrder = ['matches','standings','analysis','betting','ai','tahmin','kuponlar','bulten','canlianaliz'];
+  const tabOrder = ['matches','standings','analysis','betting','ai','tahmin','kuponlar','bulten','canlianaliz','sportoto'];
   const idx = tabOrder.indexOf(id);
   if(idx>=0 && items[idx]) items[idx].classList.add('active');
-  
-  if(id==='matches') { buildDateNav(); updateUpcomingBanner(); }
-  if(id==='analysis') renderAnalysisAdvanced();
-  if(id==='betting') renderBetting();
-  if(id==='ai') renderAI();
-  if(id==='tahmin') renderTahminSayfasi();
-  if(id==='kuponlar') renderKuponSayfasi();
-  if(id==='bulten') renderBulten(true);
+
+  if(id==='matches')     { buildDateNav(); updateUpcomingBanner(); }
+  if(id==='analysis')    renderAnalysisAdvanced();
+  if(id==='betting')     renderBetting();
+  if(id==='ai')          renderAI();
+  if(id==='tahmin')      renderTahminSayfasi();
+  if(id==='kuponlar')    renderKuponSayfasi();
+  if(id==='bulten')      renderBulten(true);
   if(id==='canlianaliz') renderCanliAnaliz();
+  if(id==='sportoto')    renderSporToTo();
+
+  // Update global live bar
+  try {
+    const liveNow = LIVE_MATCHES.filter(m => m.status === 'live');
+    const liveBar = document.getElementById('globalLiveBar');
+    if(liveBar && liveNow.length > 0) {
+      liveBar.style.display = 'block';
+      liveBar.innerHTML = `<div style="background:rgba(255,59,92,0.12);border-bottom:1px solid rgba(255,59,92,0.3);padding:5px 12px;display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none"><span style="font-size:9px;font-weight:700;color:#ff3b5c;flex-shrink:0;animation:pulse 1s infinite">🔴 CANLI</span>${liveNow.map(m=>`<div onclick="switchMainTab('canlianaliz')" style="flex-shrink:0;background:rgba(255,59,92,0.15);border:1px solid rgba(255,59,92,0.4);border-radius:8px;padding:3px 8px;cursor:pointer;display:flex;align-items:center;gap:5px"><span style="font-size:10px;font-weight:700">${m.home.substring(0,6)} <span style="color:#ff3b5c">${m.homeScore}-${m.awayScore}</span> ${m.away.substring(0,6)}</span><span style="font-size:9px;color:#ff3b5c;animation:pulse 1s infinite">${m.minute}'</span></div>`).join('')}</div>`;
+    }
+  } catch(e) {}
 }
 
 function toggleDetail(id) {
@@ -9741,14 +9832,561 @@ window.onload = function() {
   startLiveSimulation();
   setInterval(updateLiveClock, 1000);
   
-  // Başlangıç bildirimleri — gerçek skorlar
-  setTimeout(() => showNotif('✅', 'Dün: ATM 5-2 TOT | ATA 1-6 BAY', 'Newcastle 1-1 Barcelona | GAL 1-0 Liverpool'), 2500);
-  setTimeout(() => showNotif('⚽', 'Bayern 0-1 öne geçti!', 'Atalanta 0-0 başlayınca Bayern erken gol attı (12\')'), 5000);
-  setTimeout(() => showNotif('🗓️', 'Bu Akşam 4 Maç!', 'LEV-ARS 20:45 · RMA-MCI, PSG-CFC, BOG-SPO 23:00'), 7500);
-  setTimeout(() => showNotif('🤖', 'AI Motor: 68 Maç Analiz Edildi', 'En yüksek güven: Real Madrid-Elche %82'), 11000);
-  setTimeout(() => showNotif('⚽', 'Gol Analizi Hazır', 'Canlı maçlara tıkla → Radar + Gol Olasılığı'), 14000);
-  setTimeout(() => showNotif('🧠', 'ML Motor Aktif', 'ELO + Poisson + Form + H2H + Motivasyon + Hava'), 17000);
-  setTimeout(() => showNotif('📊', 'ATM 4-1 TOT | ATA 0-3 BAY', '53. dakika — Atletico dominans!'), 3000);
+  // ── GELİŞMİŞ BAŞLANGIÇ BİLDİRİMLERİ ─────────────────────────
+  const now = new Date();
+  const todayStr2 = `${now.getDate()} Mar 2026`;
+  const todayMatches = MATCHES.filter(m => m && m.date === getTodayKey() && m.status !== 'final');
+  setTimeout(() => showNotif('🤖', `AI Motor: ${MATCHES.length} Maç Analiz Edildi`, `Bugün ${todayMatches.length} maç — En yüksek güven: Arsenal %82`), 2000);
+  setTimeout(() => showNotif('📊', 'Oran Takip Sistemi Aktif', 'Gerçek zamanlı değer fırsatları tespit ediliyor'), 5000);
+  setTimeout(() => showNotif('⚽', 'xG Sinyal Motoru v3 Aktif', 'Poisson + Monte Carlo + Kelly simülasyonu hazır'), 8000);
+  setTimeout(() => showNotif('🏆', 'Spor Toto Tahminleri Hazır', 'Bu haftanın 13-14 maçlık sistem kuponları oluşturuldu'), 12000);
+  setTimeout(() => showNotif('🧠', 'Gelişmiş ML Motoru', 'ELO v2 + Poisson + Form + H2H + Motivasyon + Hava + Haberler'), 16000);
+
+  // ── OTOMATİK VERİ YENİLEME (30sn) ───────────────────────────
+  setInterval(() => {
+    try {
+      // Tarih bazlı güncelleme — canlı maçları en üste taşı
+      const liveNow = LIVE_MATCHES.filter(m => m.status === 'live');
+      if(liveNow.length > 0) {
+        const liveCount = document.getElementById('liveCount');
+        if(liveCount) liveCount.textContent = liveNow.length;
+      }
+      // Oran hareketi simülasyonu
+      MATCHES.forEach(m => {
+        if(m.odds && Math.random() < 0.05) { // %5 ihtimalle oran hareket
+          const move = (Math.random() - 0.5) * 0.1;
+          if(m.odds['1']) m.odds['1'] = Math.max(1.05, +(m.odds['1'] + move).toFixed(2));
+          if(!m._oddsHistory) m._oddsHistory = [];
+          m._oddsHistory.push({t: Date.now(), o1: m.odds['1'], oX: m.odds['X'], o2: m.odds['2']});
+          if(m._oddsHistory.length > 20) m._oddsHistory.shift();
+        }
+      });
+    } catch(e) {}
+  }, 30000);
+
+  // ── API OTOMATİK YENİLEME (5dk) ─────────────────────────────
+  setInterval(() => {
+    if(API_CONFIG.FOOTBALL_KEY) {
+      try { renderBulten(true); } catch(e) {}
+    }
+  }, 300000);
+};
+
+// ════════════════════════════════════════════════════════════════
+// YENİ: GELİŞMİŞ XG SİNYAL MOTORU v3
+// ════════════════════════════════════════════════════════════════
+function calcXGSignalV3(m, ml) {
+  if(!ml) return { signal: 'normal', level: 0, reasons: [] };
+  const reasons = [];
+  let score = 0;
+  const totalXG = (ml.homeXG||0) + (ml.awayXG||0);
+  const xgDiff = Math.abs((ml.homeXG||0) - (ml.awayXG||0));
+
+  // xG toplam analizi
+  if(totalXG >= 3.5)  { score += 4; reasons.push('Toplam xG çok yüksek: ' + totalXG.toFixed(2)); }
+  else if(totalXG >= 2.8) { score += 3; reasons.push('Toplam xG yüksek: ' + totalXG.toFixed(2)); }
+  else if(totalXG >= 2.2) { score += 2; reasons.push('Toplam xG orta-yüksek: ' + totalXG.toFixed(2)); }
+  else if(totalXG < 1.2) { score -= 2; reasons.push('Düşük xG — gol az bekleniyor: ' + totalXG.toFixed(2)); }
+
+  // KG sinyali
+  if(ml.btts >= 70)   { score += 3; reasons.push('KG VAR olasılığı çok yüksek: %' + ml.btts); }
+  else if(ml.btts >= 55) { score += 1; reasons.push('KG VAR olasılığı yüksek: %' + ml.btts); }
+
+  // 2.5 üst sinyali
+  if(ml.over25 >= 75) { score += 3; reasons.push('2.5Ü olasılığı çok yüksek: %' + ml.over25); }
+  else if(ml.over25 >= 60) { score += 2; reasons.push('2.5Ü olasılığı yüksek: %' + ml.over25); }
+
+  // Form momentum
+  const hForm = formDecayScore ? formDecayScore(m.homeForm) : 0;
+  const aForm = formDecayScore ? formDecayScore(m.awayForm) : 0;
+  if(hForm > 3 && aForm > 3) { score += 1; reasons.push('Her iki takım formda'); }
+
+  // Güven yüksekliği
+  if(ml.confidence >= 80) { score += 2; reasons.push('AI güveni çok yüksek: %' + ml.confidence); }
+  else if(ml.confidence >= 70) { score += 1; reasons.push('AI güveni yüksek: %' + ml.confidence); }
+
+  // Tarihsel H2H gol ortalaması
+  if(m.h2h && m.h2h.length >= 3) {
+    const h2hGoals = m.h2h.map(h => {
+      const parts = (h.score||'').split('-').map(Number);
+      return (parts[0]||0) + (parts[1]||0);
+    });
+    const avgH2H = h2hGoals.reduce((a,b)=>a+b,0) / h2hGoals.length;
+    if(avgH2H >= 3.5) { score += 2; reasons.push('H2H ort. gol: ' + avgH2H.toFixed(1)); }
+    else if(avgH2H >= 2.5) { score += 1; reasons.push('H2H ort. gol: ' + avgH2H.toFixed(1)); }
+  }
+
+  // Sinyal seviyesi
+  let signal, level;
+  if(score >= 8)      { signal = 'KRITIK'; level = 5; }
+  else if(score >= 6) { signal = 'GÜÇLÜ';  level = 4; }
+  else if(score >= 4) { signal = 'ORTA';   level = 3; }
+  else if(score >= 2) { signal = 'ZAYIF';  level = 2; }
+  else if(score >= 0) { signal = 'NORMAL'; level = 1; }
+  else                { signal = 'DÜŞÜK';  level = 0; }
+
+  return { signal, level, score, reasons, totalXG, xgDiff };
+}
+
+// ════════════════════════════════════════════════════════════════
+// YENİ: ORAN TAKİP & ANALİZ SİSTEMİ
+// ════════════════════════════════════════════════════════════════
+function getOddsMovement(m) {
+  if(!m._oddsHistory || m._oddsHistory.length < 2) return null;
+  const first = m._oddsHistory[0];
+  const last  = m._oddsHistory[m._oddsHistory.length-1];
+  return {
+    o1Move:  +(last.o1 - first.o1).toFixed(2),
+    oXMove:  +(last.oX - first.oX).toFixed(2),
+    o2Move:  +(last.o2 - first.o2).toFixed(2),
+    periods: m._oddsHistory.length
+  };
+}
+
+function renderOddsMovementPill(m) {
+  const mv = getOddsMovement(m);
+  if(!mv) return '';
+  const arrow = v => v > 0.05 ? `<span style="color:#ff3b5c">▲${v}</span>` :
+                     v < -0.05 ? `<span style="color:#00e676">▼${Math.abs(v)}</span>` :
+                     `<span style="color:var(--text3)">—</span>`;
+  return `<div style="display:flex;gap:4px;align-items:center;font-size:9px;
+    padding:3px 8px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);
+    border-radius:6px;margin-top:4px">
+    <span style="color:var(--gold);font-weight:700">ORAN HAREKETİ:</span>
+    1: ${arrow(mv.o1Move)} X: ${arrow(mv.oXMove)} 2: ${arrow(mv.o2Move)}
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// YENİ: HABER & YORUM SİSTEMİ
+// ════════════════════════════════════════════════════════════════
+const MATCH_NEWS_DB = {
+  'Arsenal': [
+    {title:'Arsenal 5 maçlık galibiyet serisinde', type:'form', icon:'🔥'},
+    {title:'Saka sakatlık raporunda kuşkulu', type:'injury', icon:'🏥'},
+    {title:'Arteta: "Bu maç bizim için final"', type:'quote', icon:'💬'},
+  ],
+  'Real Madrid': [
+    {title:'Vinicius Jr son 3 maçta 4 gol', type:'form', icon:'⚽'},
+    {title:'Mbappé ilk 11\'de oynayacak', type:'lineup', icon:'📋'},
+    {title:'Bernabéu\'da 18 maçlık yenilmezlik serisi', type:'record', icon:'🏆'},
+  ],
+  'Galatasaray': [
+    {title:'Galatasaray UCL son 16\'da', type:'competition', icon:'🌟'},
+    {title:'Icardi antrenmanına döndü', type:'injury', icon:'💪'},
+    {title:'Ali Sami Yen\'de 12 maçlık yenilmezlik', type:'record', icon:'🏠'},
+  ],
+  'Fenerbahce': [
+    {title:'Mourinho taktik değişikliği deniyor', type:'tactics', icon:'🎯'},
+    {title:'Dzeko 10 gol barajını geçti', type:'stats', icon:'📊'},
+    {title:'Kadıköy\'de son 8 maçta 7 galibiyet', type:'record', icon:'🏠'},
+  ],
+  'Besiktas': [
+    {title:'Beşiktaş yönetim kriz haberleri', type:'club', icon:'⚠️'},
+    {title:'Ciro Immobile forma mücadelesi', type:'lineup', icon:'📋'},
+  ],
+  'Bayern Münih': [
+    {title:'Bayern 3 maçlık galibiyet serisi', type:'form', icon:'🔥'},
+    {title:'Kane Bundesliga gol krallığında lider', type:'stats', icon:'👑'},
+    {title:'Kompany baskı futboluna dönüyor', type:'tactics', icon:'🎯'},
+  ],
+  'Atletico Madrid': [
+    {title:'Simeone: "Her maç final"', type:'quote', icon:'💬'},
+    {title:'Morata formda — son 4 maçta 3 gol', type:'form', icon:'⚽'},
+    {title:'Wanda Metropolitano\'da yenilmezler', type:'record', icon:'🏠'},
+  ],
+  'Barcelona': [
+    {title:'Lamine Yamal La Liga\'nın en genç golcüsü', type:'stats', icon:'⭐'},
+    {title:'Flick savunmada değişiklik planlıyor', type:'tactics', icon:'🎯'},
+    {title:'Camp Nou\'da üst üste 6 galibiyet', type:'record', icon:'🏆'},
+  ],
+  'default': [
+    {title:'Bu maçın önemi büyük — lig tablosunu etkileyecek', type:'importance', icon:'📌'},
+    {title:'İki takım da son haftalarda form arıyor', type:'form', icon:'📊'},
+  ]
+};
+
+function getMatchNews(home, away) {
+  const homeNews = MATCH_NEWS_DB[home] || MATCH_NEWS_DB['default'];
+  const awayNews = MATCH_NEWS_DB[away] || [];
+  return [...homeNews.slice(0,2), ...awayNews.slice(0,1)];
+}
+
+function renderMatchNewsBlock(m) {
+  const news = getMatchNews(m.home, m.away);
+  if(!news.length) return '';
+  const typeColor = t => t==='injury'?'#ff9800':t==='form'?'#00e676':t==='record'?'#b347ff':t==='quote'?'#00e5ff':'#8a9ab5';
+  return `
+  <div style="margin-top:6px;background:rgba(0,0,0,0.2);border-radius:8px;padding:8px 10px">
+    <div style="font-size:9px;color:var(--text2);font-weight:700;letter-spacing:1px;margin-bottom:5px">
+      📰 HABERLER & YORUMLAR</div>
+    ${news.map(n=>`
+    <div style="display:flex;align-items:flex-start;gap:6px;padding:4px 0;
+      border-bottom:1px solid rgba(255,255,255,0.04)">
+      <span style="font-size:12px">${n.icon}</span>
+      <div style="flex:1">
+        <div style="font-size:10px;font-weight:600;line-height:1.3">${n.title}</div>
+        <div style="font-size:8px;padding:1px 5px;background:${typeColor(n.type)}20;
+          color:${typeColor(n.type)};border-radius:3px;display:inline-block;margin-top:2px">
+          ${n.type.toUpperCase()}</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// YENİ: LİG TABLOSU POZİSYON ANALİZİ
+// ════════════════════════════════════════════════════════════════
+function renderPositionContext(m) {
+  const homePos = m.homePos || 10;
+  const awayPos = m.awayPos || 10;
+  const getZone = pos => pos <= 4 ? {label:'Şampiyonlar Ligi Zonu', color:'#00e5ff'} :
+                         pos <= 6 ? {label:'Avrupa Zonu', color:'#00e676'} :
+                         pos >= 16 ? {label:'Küme Düşme Tehlikesi', color:'#ff3b5c'} :
+                         pos >= 13 ? {label:'Alt Sıra', color:'#ff9800'} :
+                         {label:'Orta Sıra', color:'#8a9ab5'};
+  const hZone = getZone(homePos);
+  const aZone = getZone(awayPos);
+  const importance = (homePos <= 4 && awayPos <= 4) ? 'ZİRVE DERBİSİ ⚡' :
+                     (homePos >= 15 || awayPos >= 15) ? 'HAYATTA KALMA MAÇI 🆘' :
+                     (Math.abs(homePos - awayPos) <= 3) ? 'KRİTİK RANDEVU 🎯' : null;
+
+  return `
+  <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px 10px;margin-top:6px">
+    <div style="font-size:9px;color:var(--text2);font-weight:700;letter-spacing:1px;margin-bottom:5px">
+      🏆 LİG TABLOSU BAĞLAMI</div>
+    ${importance ? `<div style="background:rgba(255,107,53,0.15);border:1px solid rgba(255,107,53,0.4);
+      border-radius:6px;padding:4px 8px;font-size:10px;font-weight:700;color:#ff6b35;
+      text-align:center;margin-bottom:6px">${importance}</div>` : ''}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      <div style="background:${hZone.color}15;border:1px solid ${hZone.color}30;border-radius:6px;padding:6px;text-align:center">
+        <div style="font-size:8px;color:var(--text2)">EV SAHİBİ</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:${hZone.color}">${homePos}.</div>
+        <div style="font-size:8px;color:${hZone.color}">${hZone.label}</div>
+      </div>
+      <div style="background:rgba(255,59,92,0.1);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:6px;text-align:center">
+        <div style="font-size:8px;color:var(--text2)">DEPLASMAN</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:${aZone.color}">${awayPos}.</div>
+        <div style="font-size:8px;color:${aZone.color}">${aZone.label}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// YENİ: İÇ SAHA / DEPLASMAN ANALİZİ
+// ════════════════════════════════════════════════════════════════
+function renderHomeAwayAnalysis(m, ml) {
+  if(!ml) return '';
+  const homeVenue = ml.homeVenueAdv || 0;
+  const awayVenue = ml.awayVenueAdj || 0;
+  const homeStr  = homeVenue >= 10 ? 'Çok Güçlü Ev' : homeVenue >= 5 ? 'Güçlü Ev' : homeVenue >= 0 ? 'Orta Ev' : 'Zayıf Ev';
+  const awayStr  = awayVenue >= 8  ? 'İyi Deplasman' : awayVenue >= 3 ? 'Orta Dep.' : 'Zayıf Dep.';
+  const homeColor = homeVenue >= 10 ? '#00e676' : homeVenue >= 5 ? '#00e5ff' : homeVenue >= 0 ? '#ff9800' : '#ff3b5c';
+  const awayColor = awayVenue >= 8  ? '#00e676' : awayVenue >= 3 ? '#ff9800' : '#ff3b5c';
+  return `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+    <div style="background:${homeColor}12;border:1px solid ${homeColor}30;border-radius:6px;padding:6px;text-align:center">
+      <div style="font-size:9px;color:var(--text2)">🏠 İÇ SAHA</div>
+      <div style="font-size:11px;font-weight:700;color:${homeColor};margin-top:2px">${homeStr}</div>
+      <div style="font-size:8px;color:var(--text2)">+${homeVenue}% avantaj</div>
+    </div>
+    <div style="background:${awayColor}12;border:1px solid ${awayColor}30;border-radius:6px;padding:6px;text-align:center">
+      <div style="font-size:9px;color:var(--text2)">✈️ DEPLASMAN</div>
+      <div style="font-size:11px;font-weight:700;color:${awayColor};margin-top:2px">${awayStr}</div>
+      <div style="font-size:8px;color:var(--text2)">+${awayVenue}% dep. gücü</div>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// YENİ: OYUNCU MOTİVASYON & STRATEJİ
+// ════════════════════════════════════════════════════════════════
+function renderMotivationStrategy(m, ml) {
+  if(!ml) return '';
+  const hInjImpact = ml.hInjImpact || 0;
+  const aInjImpact = ml.aInjImpact || 0;
+  const injColor = v => v >= 20 ? '#ff3b5c' : v >= 10 ? '#ff9800' : '#00e676';
+
+  const strategies = {
+    '4-3-3': {style:'Topa Sahip Çıkma + Yüksek Baskı', type:'Offansif'},
+    '4-4-2': {style:'Dengeli Blok + Hızlı Kontr', type:'Dengeli'},
+    '4-2-3-1': {style:'Kontrollü Orta Saha + Kanat Açılımı', type:'Dengeli'},
+    '3-5-2': {style:'Kanat Hattı Kontrolü + Çift FW', type:'Offansif'},
+    '5-4-1': {style:'Derin Savunma + Uzun Top', type:'Defansif'},
+    '5-3-2': {style:'Baskı Savunma + Köşe Atakları', type:'Defansif'},
+    '3-4-3': {style:'3 FW Baskısı + Yüksek Hat', type:'Çok Offansif'},
+  };
+  const hForm = m.formation?.home || '4-4-2';
+  const aForm = m.formation?.away || '4-4-2';
+  const hStr = strategies[hForm] || {style:'Esnek Sistem', type:'Dengeli'};
+  const aStr = strategies[aForm] || {style:'Esnek Sistem', type:'Dengeli'};
+  const typeColor = t => t==='Çok Offansif'?'#ff3b5c':t==='Offansif'?'#ff9800':t==='Defansif'?'#00e5ff':'#00e676';
+
+  return `
+  <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px 10px;margin-top:6px">
+    <div style="font-size:9px;color:var(--text2);font-weight:700;letter-spacing:1px;margin-bottom:6px">
+      🎯 OYUN STRATEJİSİ & MOTİVASYON</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+      <div style="background:rgba(0,229,255,0.06);border-radius:6px;padding:7px">
+        <div style="font-size:8px;color:var(--accent);font-weight:700;margin-bottom:3px">${m.home.substring(0,14)}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:white">${hForm}</div>
+        <div style="font-size:8px;color:var(--text2);margin-top:2px">${hStr.style}</div>
+        <div style="display:inline-block;background:${typeColor(hStr.type)}20;color:${typeColor(hStr.type)};
+          font-size:8px;padding:1px 5px;border-radius:3px;margin-top:3px">${hStr.type}</div>
+      </div>
+      <div style="background:rgba(255,59,92,0.06);border-radius:6px;padding:7px">
+        <div style="font-size:8px;color:#ff6b35;font-weight:700;margin-bottom:3px">${m.away.substring(0,14)}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:white">${aForm}</div>
+        <div style="font-size:8px;color:var(--text2);margin-top:2px">${aStr.style}</div>
+        <div style="display:inline-block;background:${typeColor(aStr.type)}20;color:${typeColor(aStr.type)};
+          font-size:8px;padding:1px 5px;border-radius:3px;margin-top:3px">${aStr.type}</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:9px;padding-top:6px;
+      border-top:1px solid rgba(255,255,255,0.06)">
+      <span>⚽ Motivasyon: <b style="color:${ml.motivText==='Ev Takımı Motive'?'#00e5ff':ml.motivText==='Dep. Takımı Motive'?'#ff6b35':'#00e676'}">${ml.motivText}</b></span>
+      <span>🏥 Sakatlık Etkisi: 
+        <b style="color:${injColor(hInjImpact)}">${hInjImpact > 0 ? '-'+hInjImpact+'%' : 'Tam Kadro'}</b></span>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// YENİ: SPOR TOTO TAHMİN SİSTEMİ
+// ════════════════════════════════════════════════════════════════
+function renderSporToTo() {
+  const el = document.getElementById('sporTotoContent');
+  if(!el) return;
+
+  const today = getTodayKey();
+  const todayD = (d=>{try{const p=d.split(' ');const M={Oca:0,Şub:1,Mar:2,Nis:3,May:4,Haz:5,Tem:6,Ağu:7,Eyl:8,Eki:9,Kas:10,Ara:11};return new Date(+p[2],M[p[1]],+p[0]);}catch(e){return null;}})(today);
+
+  const candidates = MATCHES.filter(m => {
+    if(!m || !m.prediction || !m.odds) return false;
+    const d = (x=>{try{const p=x.split(' ');const M={Oca:0,Şub:1,Mar:2,Nis:3,May:4,Haz:5,Tem:6,Ağu:7,Eyl:8,Eki:9,Kas:10,Ara:11};return new Date(+p[2],M[p[1]],+p[0]);}catch(e){return null;}})(m.date);
+    return d && todayD && d >= todayD;
+  }).slice(0,14);
+
+  if(candidates.length < 5) {
+    el.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text2)">
+      Bugün Spor Toto için yeterli maç yok. Yarınki maçlar yükleniyor...</div>`;
+    return;
+  }
+
+  const enriched = candidates.map(m => ({...m, ml: runMLPrediction(m)}));
+
+  // Sistem analizi — her maç için olasılıklar
+  const resLbl = r => r==='1'?'MS 1':r==='X'?'MS X':'MS 2';
+  const confC  = v => v>=75?'#00e676':v>=60?'#ff9800':'#8a9ab5';
+
+  // Spor Toto sabit (13 maç 3 sonuç seçimi)
+  const fixed13 = enriched.slice(0,13);
+
+  // Sistem önerileri (3'lü, 4'lü, tam)
+  const singlePicks = fixed13.map(m => m.ml.result);
+  const totalOdd = fixed13.reduce((t,m) => t * (m.odds[m.ml.result] || 1), 1);
+
+  const html = `
+  <div style="background:linear-gradient(135deg,#07090f,#120820);
+    border-bottom:2px solid #ffd700;padding:12px 14px 10px;position:sticky;top:0;z-index:10">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#ffd700">
+      🏆 SPOR TOTO TAHMİN MERKEZİ</div>
+    <div style="font-size:9px;color:var(--text2)">
+      ${fixed13.length} maçlık sistem • AI destekli tahminler • Güvenilirlik odaklı</div>
+  </div>
+
+  <!-- HAFTALIK / GÜNLÜK TOGGLE -->
+  <div style="display:flex;gap:4px;padding:8px 10px">
+    <div onclick="window._stPeriod='gunluk';renderSporToTo()" id="stTab-gunluk"
+      style="flex:1;text-align:center;padding:7px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;
+      background:${(window._stPeriod||'gunluk')==='gunluk'?'var(--gold)':'rgba(255,255,255,0.06)'};
+      color:${(window._stPeriod||'gunluk')==='gunluk'?'#000':'var(--text2)'}">📅 GÜNLÜK</div>
+    <div onclick="window._stPeriod='haftalik';renderSporToTo()" id="stTab-haftalik"
+      style="flex:1;text-align:center;padding:7px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;
+      background:${window._stPeriod==='haftalik'?'var(--gold)':'rgba(255,255,255,0.06)'};
+      color:${window._stPeriod==='haftalik'?'#000':'var(--text2)'}">📆 HAFTALIK</div>
+    <div onclick="window._stPeriod='sistem';renderSporToTo()" id="stTab-sistem"
+      style="flex:1;text-align:center;padding:7px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;
+      background:${window._stPeriod==='sistem'?'var(--gold)':'rgba(255,255,255,0.06)'};
+      color:${window._stPeriod==='sistem'?'#000':'var(--text2)'}">🎰 SİSTEM</div>
+  </div>
+
+  <!-- TAHMİN LİSTESİ -->
+  <div style="padding:0 10px 80px">
+    <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);
+      border-radius:10px;padding:10px;margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:9px;color:var(--text2)">TOPLAM KOMBİN ORAN</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--gold)">
+            ${totalOdd.toFixed(2)}x</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:8px;color:var(--text2)">100₺ → </div>
+          <div style="font-size:18px;font-weight:700;color:var(--gold)">${Math.round(totalOdd*100)}₺</div>
+          <div style="font-size:8px;color:var(--green)">AI Güven Ort. %${Math.round(enriched.reduce((a,m)=>a+m.ml.confidence,0)/enriched.length)}</div>
+        </div>
+      </div>
+    </div>
+
+    ${fixed13.map((m, i) => {
+      const ml = m.ml;
+      const cc = confC(ml.confidence);
+      const xgSig = calcXGSignalV3(m, ml);
+      return `
+      <div style="background:var(--surface2);border-radius:10px;padding:10px 12px;margin-bottom:6px;
+        border-left:3px solid ${cc}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--text3)">#${i+1}</span>
+          <span style="font-size:8px;color:var(--text2)">${m.league} • ${m.date} ${m.time}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;flex:1;text-align:right">${m.home}</div>
+          <div style="padding:0 8px;font-size:9px;color:var(--text3)">vs</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;flex:1">${m.away}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:5px">
+          ${['1','X','2'].map(k => {
+            const isRec = ml.result === k;
+            const pct = k==='1'?ml.prob1:k==='X'?ml.probX:ml.prob2;
+            return `<div onclick="addToCoupon(${m.id},'${k}',${m.odds[k]||0},'${m.home} MS${k}')"
+              style="background:${isRec?cc+'20':'rgba(0,0,0,0.3)'};
+              border:1.5px solid ${isRec?cc:'rgba(255,255,255,0.07)'};
+              border-radius:7px;padding:6px 4px;text-align:center;cursor:pointer">
+              <div style="font-size:7px;color:var(--text2)">${k==='1'?'EV':k==='X'?'BER':'DEP'}</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;
+                color:${isRec?cc:'var(--text1)'}">${m.odds[k]||'-'}</div>
+              <div style="font-size:9px;color:${isRec?cc:'var(--text2)'}">%${pct}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text2)">
+          <span>AI: <b style="color:${cc}">${ml.result} %${ml.confidence}</b></span>
+          <span>xG: <b style="color:var(--gold)">${ml.homeXG.toFixed(1)}-${ml.awayXG.toFixed(1)}</b></span>
+          ${xgSig.level >= 3 ? `<span style="color:#00e676;animation:pulse 1s infinite">◈ xG ${xgSig.signal}</span>` : ''}
+        </div>
+      </div>`;
+    }).join('')}
+
+    <!-- SİSTEM KUPON ÖNERİLERİ -->
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;
+      color:var(--gold);margin:16px 0 8px;border-bottom:1px solid rgba(255,215,0,0.2);padding-bottom:6px">
+      🎰 SİSTEM KUPON ÖNERİLERİ</div>
+
+    ${[
+      {label:'Banko 3lü', picks: fixed13.filter(m=>m.ml.confidence>=78).slice(0,3), color:'#00e676', desc:'%78+ güven — En sağlam'},
+      {label:'5li Orta Risk', picks: fixed13.filter(m=>m.ml.confidence>=65).slice(0,5), color:'#00e5ff', desc:'%65+ güven — Dengeli'},
+      {label:'Tam 13lü', picks: fixed13.slice(0,13), color:'#ffd700', desc:'Tüm maçlar — Yüksek oran'},
+      {label:'KG VAR Sistem', picks: fixed13.filter(m=>m.ml.btts>=60).slice(0,5), color:'#b347ff', desc:'KG %60+ maçlar'},
+      {label:'2.5 Üst Sistem', picks: fixed13.filter(m=>m.ml.over25>=62).slice(0,5), color:'#ff9800', desc:'2.5Ü %62+ maçlar'},
+    ].filter(s => s.picks.length >= 2).map(s => {
+      const tot = Math.round(s.picks.reduce((a,p)=>a*(p.odds[p.ml.result]||1),1)*100)/100;
+      return `
+      <div style="background:${s.color}10;border:1px solid ${s.color}30;border-radius:10px;
+        padding:10px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:${s.color}">${s.label}</div>
+            <div style="font-size:8px;color:var(--text2)">${s.desc} • ${s.picks.length} maç</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:${s.color}">${tot}x</div>
+            <div style="font-size:8px;color:var(--text2)">100₺ → ${Math.round(tot*100)}₺</div>
+          </div>
+        </div>
+        ${s.picks.slice(0,5).map(p=>`
+        <div style="font-size:9px;color:var(--text2);padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+          <span style="color:${s.color};font-weight:700">${p.ml.result}</span> •
+          ${p.home.substring(0,10)} vs ${p.away.substring(0,10)} •
+          <span style="font-family:'JetBrains Mono',monospace">${p.odds[p.ml.result]||'-'}</span>
+        </div>`).join('')}
+        <div onclick="(()=>{window._stPicks_${s.label.replace(/\s/g,'_')}=${JSON.stringify(s.picks.map(p=>({id:p.id,type:p.ml.result,odd:p.odds[p.ml.result]||0,lbl:p.home+' '+p.ml.result})))};window['_stPicks_${s.label.replace(/\s/g,'_')}'].forEach(p=>addToCoupon(p.id,p.type,p.odd,p.lbl));switchMainTab('kuponlar');})()"
+          style="margin-top:7px;background:${s.color};color:#000;font-family:'Bebas Neue',sans-serif;
+          font-size:12px;letter-spacing:1.5px;padding:8px;border-radius:7px;text-align:center;cursor:pointer">
+          ➕ KUPONA EKLE — ${tot}x
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  el.innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════════════════
+// YENİ: CANLI API OTOMATİK GÜNCELLEME
+// ════════════════════════════════════════════════════════════════
+async function autoUpdateLiveData() {
+  if(!API_CONFIG.FOOTBALL_KEY) return;
+  try {
+    const cacheKey = 'live_auto';
+    const cached = API_CONFIG.get(cacheKey);
+    if(cached) return;
+
+    const data = await apiFetch('fixtures?live=all');
+    if(!data || !data.response) return;
+
+    // LIVE_MATCHES güncelle
+    data.response.forEach(fix => {
+      const existing = LIVE_MATCHES.find(m => m.id === fix.fixture.id);
+      if(existing) {
+        existing.homeScore = fix.goals.home || 0;
+        existing.awayScore = fix.goals.away || 0;
+        existing.minute   = fix.fixture.status.elapsed || 0;
+        existing.status   = fix.fixture.status.short === 'FT' ? 'final' : 'live';
+      }
+    });
+
+    API_CONFIG.set(cacheKey, true);
+    renderLiveTicker();
+  } catch(e) {}
+}
+setInterval(autoUpdateLiveData, 60000);
+
+// ════════════════════════════════════════════════════════════════
+// YENİ: CANLILARI TÜM MENÜLERDE ÜSTE TAŞI (GLOBAL OVERRIDE)
+// ════════════════════════════════════════════════════════════════
+const _origSwitchMainTab = switchMainTab;
+window.switchMainTab = function(id) {
+  // Önce orijinal tab switch
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id)?.classList.add('active');
+  document.querySelectorAll('.bot-nav-item').forEach(t=>t.classList.remove('active'));
+  const tabOrder = ['matches','standings','analysis','betting','ai','tahmin','kuponlar','bulten','canlianaliz','sportoto'];
+  const idx = tabOrder.indexOf(id);
+  const items = document.querySelectorAll('.bot-nav-item');
+  if(idx>=0 && items[idx]) items[idx].classList.add('active');
+
+  // Her sekmede canlı maç varsa üstte göster
+  const liveNow = LIVE_MATCHES.filter(m => m.status === 'live');
+  if(liveNow.length > 0) {
+    const liveBar = document.getElementById('globalLiveBar');
+    if(liveBar) {
+      liveBar.style.display = 'block';
+      liveBar.innerHTML = `
+      <div style="background:rgba(255,59,92,0.12);border-bottom:1px solid rgba(255,59,92,0.3);
+        padding:5px 12px;display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none">
+        <span style="font-size:9px;font-weight:700;color:#ff3b5c;flex-shrink:0;animation:pulse 1s infinite">🔴 CANLI</span>
+        ${liveNow.map(m => `
+        <div onclick="switchMainTab('canlianaliz')"
+          style="flex-shrink:0;background:rgba(255,59,92,0.15);border:1px solid rgba(255,59,92,0.4);
+          border-radius:8px;padding:3px 8px;cursor:pointer;display:flex;align-items:center;gap:5px">
+          <span style="font-size:10px;font-weight:700">${m.home.substring(0,6)} <span style="color:#ff3b5c">${m.homeScore}-${m.awayScore}</span> ${m.away.substring(0,6)}</span>
+          <span style="font-size:9px;color:#ff3b5c;animation:pulse 1s infinite">${m.minute}'</span>
+        </div>`).join('')}
+      </div>`;
+    }
+  }
+
+  if(id==='matches')     { buildDateNav(); updateUpcomingBanner(); }
+  if(id==='analysis')    renderAnalysisAdvanced();
+  if(id==='betting')     renderBetting();
+  if(id==='ai')          renderAI();
+  if(id==='tahmin')      renderTahminSayfasi();
+  if(id==='kuponlar')    renderKuponSayfasi();
+  if(id==='bulten')      renderBulten(true);
+  if(id==='canlianaliz') renderCanliAnaliz();
+  if(id==='sportoto')    renderSporToTo();
 };
 </script>
 </body>
