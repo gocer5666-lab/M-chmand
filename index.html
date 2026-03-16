@@ -6851,127 +6851,330 @@ function getTodayStr() {
 
 function renderMatchCard(m) {
   if (!m || !m.home) return '';
+
+  // ── ML TAHMİN HESAPLA ──────────────────────────────────────
+  let ml = null;
+  try { ml = runMLPrediction(m); } catch(e) {}
+
+  // ── FORM ──────────────────────────────────────────────────
   const formH = (m.homeForm||[]).map(f=>`<div class="form-dot form-${f.toLowerCase()}">${f}</div>`).join('');
   const formA = (m.awayForm||[]).map(f=>`<div class="form-dot form-${f.toLowerCase()}">${f}</div>`).join('');
-  const pred = m.prediction || {prob:[33,33,34],aiConf:60,aiText:'',result:'X'};
-  const wProb = pred.prob[0];
-  const dProb = pred.prob[1];
-  const lProb = pred.prob[2];
-  
+
+  // ── TAHMİN DEĞERLERİ (ml öncelikli) ──────────────────────
+  const pred  = m.prediction || {prob:[33,33,34],aiConf:50,aiText:'',result:'X'};
+  const wProb = ml ? ml.prob1 : pred.prob[0];
+  const dProb = ml ? ml.probX : pred.prob[1];
+  const lProb = ml ? ml.prob2 : pred.prob[2];
+  const aiConf   = ml ? ml.confidence : pred.aiConf;
+  const aiResult = ml ? ml.result     : pred.result;
+  const aiText   = ml ? generateDynamicAIText(m, ml) : (pred.aiText || 'Analiz yükleniyor...');
+  const confColor = aiConf>=75?'#00e676':aiConf>=60?'#ff9800':'#8a9ab5';
+
+  // ── xG ────────────────────────────────────────────────────
+  const hXG = ml ? ml.homeXG : (m.stats?.xg?.[0] || m.homeGoals || 1.2);
+  const aXG = ml ? ml.awayXG : (m.stats?.xg?.[1] || m.awayGoals || 1.0);
+  const totalXG = hXG + aXG;
+
+  // ── GOL TAHMİN PİLLLERİ ──────────────────────────────────
+  const kgPct  = ml && ml.btts  > 0 ? ml.btts  :
+    Math.min(88, Math.round(totalXG*18 + ((m.homeGoals||1)>0.8&&(m.awayGoals||1)>0.8?12:0)));
+  const u25Pct = ml && ml.over25 > 0 ? ml.over25 :
+    Math.min(88, totalXG>=2.5?68:totalXG>=2.0?52:36);
+  const u35Pct = ml && ml.over35 > 0 ? ml.over35 :
+    Math.min(78, totalXG>=3.0?52:totalXG>=2.5?36:18);
+  const iyPct  = ml && ml.iy?.ov05 ? Math.round(ml.iy.ov05*100) :
+    Math.min(82, Math.round(totalXG*19+12));
+  const xgHigh = totalXG >= 2.5 || kgPct >= 65;
+
+  function pillHtml(icon, label, pct, bg, border, color, pulse='') {
+    return `<div style="display:inline-flex;align-items:center;gap:3px;padding:3px 8px;
+      border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.3px;
+      background:${bg};border:1px solid ${border};color:${color};${pulse}">
+      ${icon} ${label} ${pct>0?pct+'%':''}</div>`;
+  }
+  let pills = '';
+  if(kgPct >= 52)  pills += pillHtml('⚽','KG VAR', kgPct, 'rgba(0,230,118,0.12)','rgba(0,230,118,0.4)','#00e676');
+  else             pills += pillHtml('🚫','KG YOK', 100-kgPct, 'rgba(255,59,92,0.1)','rgba(255,59,92,0.35)','#ff3b5c');
+  if(iyPct >= 45)  pills += pillHtml('🕐','İY GOL', iyPct, 'rgba(0,229,255,0.1)','rgba(0,229,255,0.3)','#00e5ff');
+  if(u25Pct >= 52) pills += pillHtml('📊','2.5 ÜST', u25Pct, 'rgba(179,71,255,0.1)','rgba(179,71,255,0.35)','#b347ff');
+  else             pills += pillHtml('📊','2.5 ALT', 100-u25Pct, 'rgba(255,107,53,0.1)','rgba(255,107,53,0.3)','#ff6b35');
+  if(u35Pct >= 35) pills += pillHtml('🔥','3.5 ÜST', u35Pct, 'rgba(255,152,0,0.1)','rgba(255,152,0,0.35)','#ff9800');
+  if(xgHigh)       pills += pillHtml('◈','xG SİNYAL', 0, 'rgba(0,230,118,0.15)','rgba(0,230,118,0.5)','#00e676','animation:pulse 1.5s infinite');
+
+  // ── POZİSYON (form bazlı tahmin) ──────────────────────────
+  function estPos(form, goals, conc) {
+    const w = (form||[]).filter(f=>f==='W').length;
+    const d = (form||[]).filter(f=>f==='D').length;
+    const pts = w*3 + d;
+    const gd  = (goals||1.2) - (conc||1.2);
+    const score = pts + gd;
+    if(score >= 11) return 1;
+    if(score >= 9)  return 3;
+    if(score >= 7)  return 5;
+    if(score >= 5)  return 8;
+    if(score >= 3)  return 11;
+    if(score >= 1)  return 14;
+    return 17;
+  }
+  const hPos = (m.homePos && m.homePos!==10) ? m.homePos : estPos(m.homeForm, m.homeGoals, m.homeConceded);
+  const aPos = (m.awayPos && m.awayPos!==10) ? m.awayPos : estPos(m.awayForm, m.awayGoals, m.awayConceded);
+
+  function posZone(pos) {
+    if(pos<=4)  return {label:'UCL Zonu',     color:'#00e5ff'};
+    if(pos<=6)  return {label:'Avrupa Ligi',  color:'#00e676'};
+    if(pos<=9)  return {label:'Üst Yarı',     color:'#8a9ab5'};
+    if(pos<=12) return {label:'Orta Sıra',    color:'#607d8b'};
+    if(pos<=15) return {label:'Alt Sıra',     color:'#ff9800'};
+    return       {label:'Düşme Hattı',        color:'#ff3b5c'};
+  }
+  const hZone = posZone(hPos);
+  const aZone = posZone(aPos);
+  const isTopMatch = hPos<=4 && aPos<=4;
+  const isDerby    = Math.abs(hPos-aPos) <= 2 && hPos <= 8;
+  const isRelMatch = hPos>=15 || aPos>=15;
+  const matchImportance = isTopMatch ? '⚡ ZİRVE DERBİSİ' : isDerby ? '🎯 KRİTİK RANDEVU' : isRelMatch ? '🆘 HAYATTA KALMA' : null;
+
+  // ── FORMASYON (akıllı) ────────────────────────────────────
+  function smartForm(goals, conc, form) {
+    const w = (form||[]).filter(f=>f==='W').length;
+    const gd = (goals||1.2) - (conc||1.2);
+    if(gd > 1.0 && w>=3) return '4-3-3';
+    if(gd > 0.4 && w>=2) return '4-2-3-1';
+    if(gd < -1.0)         return '5-4-1';
+    if(gd < -0.3 && w<=2) return '5-3-2';
+    if(w <= 1)             return '4-5-1';
+    return '4-4-2';
+  }
+  const hFormRaw = m.formation?.home;
+  const aFormRaw = m.formation?.away;
+  const hFrm = (hFormRaw && hFormRaw !== '4-4-2') ? hFormRaw : smartForm(m.homeGoals, m.homeConceded, m.homeForm);
+  const aFrm = (aFormRaw && aFormRaw !== '4-4-2') ? aFormRaw : smartForm(m.awayGoals, m.awayConceded, m.awayForm);
+
+  // ── İÇ/DIŞ SAHA ──────────────────────────────────────────
+  const hWins = (m.homeForm||[]).filter(f=>f==='W').length;
+  const aWins = (m.awayForm||[]).filter(f=>f==='W').length;
+  const hGD   = (m.homeGoals||1.2) - (m.homeConceded||1.2);
+  const aGD   = (m.awayGoals||1.2) - (m.awayConceded||1.2);
+  const hVenue = ml?.homeVenueAdv || Math.round((hWins*4 + hGD*3) * 1.5);
+  const aVenue = ml?.awayVenueAdj || Math.round((aWins*3 + aGD*2) * 1.2);
+  const hVenueStr   = hVenue>=15?'Çok Güçlü Ev':hVenue>=8?'Güçlü Ev':hVenue>=2?'Orta Ev':'Zayıf Ev';
+  const aVenueStr   = aVenue>=12?'İyi Dep.':aVenue>=5?'Orta Dep.':'Zayıf Dep.';
+  const hVenueColor = hVenue>=15?'#00e676':hVenue>=8?'#00e5ff':hVenue>=2?'#ff9800':'#ff3b5c';
+  const aVenueColor = aVenue>=12?'#00e676':aVenue>=5?'#ff9800':'#ff3b5c';
+
+  // ── MOTİVASYON ────────────────────────────────────────────
+  const motivText = ml?.motivText || (hWins>aWins?'Ev Takımı Motive':aWins>hWins?'Dep. Takımı Motive':'Dengeli');
+  const injImpact = ml?.hInjImpact || 0;
+
+  // ── H2H ──────────────────────────────────────────────────
   const h2hHtml = (m.h2h||[]).slice(0,3).map(h=>`
-    <div class="h2h-item h${h.res.toLowerCase()}">
+    <div class="h2h-item h${(h.res||'D').toLowerCase()}">
       <span class="h2h-date">${h.date}</span>
       <span>${m.home} vs ${m.away}</span>
       <span class="h2h-score">${h.score}</span>
-    </div>
-  `).join('');
+    </div>`).join('');
 
+  // ── HABERLER ──────────────────────────────────────────────
+  const news = getMatchNews ? getMatchNews(m.home, m.away) : [];
+  const newsHtml = news.length ? `
+    <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px 10px;margin-top:8px">
+      <div style="font-size:9px;color:var(--text2);font-weight:700;letter-spacing:1px;margin-bottom:5px">📰 HABERLER</div>
+      ${news.map(n=>`<div style="display:flex;gap:6px;align-items:flex-start;padding:3px 0;
+        border-bottom:1px solid rgba(255,255,255,0.04)">
+        <span style="font-size:11px">${n.icon}</span>
+        <div>
+          <div style="font-size:10px;font-weight:600">${n.title}</div>
+          <div style="font-size:8px;color:#ff9800;text-transform:uppercase">${n.type}</div>
+        </div></div>`).join('')}
+    </div>` : '';
+
+  // ── OYUNCULAR ─────────────────────────────────────────────
   const playersH = ((m.players&&m.players.home)||[]).map(p=>`
     <div class="player-item">
       <span class="player-num">#${p.num}</span>
       <span class="player-name">${p.name}</span>
-      <span class="player-pos pos-${p.pos.toLowerCase()}">${p.pos}</span>
+      <span class="player-pos pos-${(p.pos||'').toLowerCase()}">${p.pos}</span>
       <span class="player-status status-${p.status}">${p.status==='ok'?'Fit':p.status==='inj'?'Sakatl.':'Cezalı'}</span>
       ${p.status==='ok'?`<span class="player-rating">${p.rating}</span>`:''}
-    </div>
-  `).join('');
-
+    </div>`).join('');
   const playersA = ((m.players&&m.players.away)||[]).map(p=>`
     <div class="player-item">
       <span class="player-num">#${p.num}</span>
       <span class="player-name">${p.name}</span>
-      <span class="player-pos pos-${p.pos.toLowerCase()}">${p.pos}</span>
+      <span class="player-pos pos-${(p.pos||'').toLowerCase()}">${p.pos}</span>
       <span class="player-status status-${p.status}">${p.status==='ok'?'Fit':p.status==='inj'?'Sakatl.':'Cezalı'}</span>
       ${p.status==='ok'?`<span class="player-rating">${p.rating}</span>`:''}
-    </div>
-  `).join('');
+    </div>`).join('');
 
-  const st = m.stats || {pos:[50,50],shots:[0,0],sot:[0,0],corners:[0,0],fouls:[0,0],xg:[0,0],offsides:[0,0],yellowCards:[0,0],redCards:[0,0]};
-  
   return `
-  <div class="match-card">
+  <div class="match-card" id="match-${m.id}" ${m.status==='live'?'style="border-left:3px solid #ff3b5c"':''}>
     <div class="match-header">
-      <span class="match-league">${m.league}</span>
+      <span class="match-league">${getLigFlag(m.league)} ${m.league}</span>
       <div style="display:flex;align-items:center;gap:6px">
-        <span style="font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace">📅 ${m.date}</span>
-        <span class="match-time ${m.status==='live'?'live':''}">${m.time}</span>
+        ${m.status==='live'?`<div style="background:#ff3b5c;border-radius:4px;padding:2px 7px;
+          font-size:9px;color:#fff;font-weight:700;animation:pulse 1s infinite">🔴 CANLI ${m.minute?m.minute+"'":''}
+          </div>`:''}
+        ${m.status==='final'?`<div style="background:rgba(255,255,255,0.1);border-radius:4px;
+          padding:2px 7px;font-size:9px;color:var(--text2)">✅ BİTTİ</div>`:''}
+        <span class="match-time">${m.time}</span>
       </div>
     </div>
+
     <div class="match-body">
+      <!-- TAKIMLAR -->
       <div class="teams-row">
         <div class="team">
-          <div style="font-size:32px">🏆</div>
+          <div style="font-size:28px">${hPos<=3?'🥇':hPos<=6?'🏆':hPos>=16?'⚠️':'⚽'}</div>
           <div class="team-name">${m.home}</div>
           <div class="team-form">${formH}</div>
-          <div style="font-size:11px;color:var(--text2);margin-top:4px">${m.homeGoals.toFixed(1)} gol/maç</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:3px">${(m.homeGoals||0).toFixed(1)} gol/maç</div>
         </div>
         <div class="vs-block">
-          <div class="vs-score">${m.score||'-:-'}</div>
-          <div class="vs-label">VS</div>
-          <div style="font-size:10px;color:var(--text2)">${m.homePos||'-'}. vs ${m.awayPos||'-'}.</div>
+          <div class="vs-score">${m.score||'VS'}</div>
+          <div style="font-size:10px;color:var(--text2)">${hPos}. - ${aPos}.</div>
+          ${matchImportance?`<div style="font-size:8px;color:#ff6b35;font-weight:700;
+            text-align:center;margin-top:2px">${matchImportance}</div>`:''}
         </div>
         <div class="team">
-          <div style="font-size:32px">⭐</div>
+          <div style="font-size:28px">${aPos<=3?'🥇':aPos<=6?'🏆':aPos>=16?'⚠️':'⚽'}</div>
           <div class="team-name">${m.away}</div>
           <div class="team-form">${formA}</div>
-          <div style="font-size:11px;color:var(--text2);margin-top:4px">${m.awayGoals.toFixed(1)} gol/maç</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:3px">${(m.awayGoals||0).toFixed(1)} gol/maç</div>
         </div>
       </div>
-      
+
+      <!-- TAHMİN BARI -->
       <div class="prediction-block">
         <div class="pred-label">
-          <span>Tahmin (%)</span>
+          <span>MS Olasılık</span>
           <span>${m.home} ${wProb}% — Bera ${dProb}% — ${m.away} ${lProb}%</span>
         </div>
         <div class="pred-bar-wrap">
-          <div class="pred-bar-w" style="width:${wProb}%">${wProb}%</div>
-          <div class="pred-bar-d" style="width:${dProb}%">${dProb}%</div>
-          <div class="pred-bar-l" style="width:${lProb}%">${lProb}%</div>
+          <div class="pred-bar-w" style="width:${wProb}%">${wProb>12?wProb+'%':''}</div>
+          <div class="pred-bar-d" style="width:${dProb}%">${dProb>12?dProb+'%':''}</div>
+          <div class="pred-bar-l" style="width:${lProb}%">${lProb>12?lProb+'%':''}</div>
         </div>
       </div>
 
+      <!-- ORANLAR -->
       <div class="odds-row">
-        <div class="odd-box" onclick="addToCoupon(${m.id},'1',${(m.odds||{})['1']||'-'},'${m.home}')">
-          <div class="odd-label">1</div>
-          <div class="odd-val">${(m.odds||{})['1']||'-'}</div>
+        ${['1','X','2'].map(k=>{
+          const o=(m.odds||{})[k]||'-';
+          const isRec=aiResult===k;
+          return `<div class="odd-box${isRec?' selected':''}" onclick="addToCoupon(${m.id},'${k}',${parseFloat(o)||0},'${m.home} MS${k}')">
+            <div class="odd-label">${k==='1'?'EV':k==='X'?'BER':'DEP'}</div>
+            <div class="odd-val" style="color:${isRec?confColor:'var(--gold)'}">${o}</div>
+          </div>`;
+        }).join('')}
+        <div class="odd-box value" onclick="addToCoupon(${m.id},'ov25',${(m.odds||{}).ov25||0},'2.5 Üst')">
+          <div class="odd-label">2.5Ü</div>
+          <div class="odd-val">${(m.odds||{}).ov25||'-'}</div>
         </div>
-        <div class="odd-box" onclick="addToCoupon(${m.id},'X',${(m.odds||{})['X']||'-'},'Beraberlik')">
-          <div class="odd-label">X</div>
-          <div class="odd-val">${(m.odds||{})['X']||'-'}</div>
-        </div>
-        <div class="odd-box" onclick="addToCoupon(${m.id},'2',${(m.odds||{})['2']||'-'},'${m.away}')">
-          <div class="odd-label">2</div>
-          <div class="odd-val">${(m.odds||{})['2']||'-'}</div>
-        </div>
-        <div class="odd-box value" onclick="addToCoupon(${m.id},'ov25',${(m.odds||{})['ov25']||'-'},'2.5 Üst')">
-          <div class="odd-label">2.5 ÜST</div>
-          <div class="odd-val">${(m.odds||{})['ov25']||'-'}</div>
-        </div>
-        <div class="odd-box" onclick="addToCoupon(${m.id},'gg',${(m.odds||{})['gg']||'-'},'KG VAR')">
-          <div class="odd-label">KG VAR</div>
-          <div class="odd-val">${(m.odds||{})['gg']||'-'}</div>
+        <div class="odd-box" onclick="addToCoupon(${m.id},'gg',${(m.odds||{}).gg||0},'KG VAR')">
+          <div class="odd-label">KG V</div>
+          <div class="odd-val">${(m.odds||{}).gg||'-'}</div>
         </div>
       </div>
 
+      <!-- AI TAHMİN -->
       <div class="ai-pred" style="cursor:pointer" onclick="switchMainTab('ai')">
         <div class="ai-icon">🤖</div>
         <div class="ai-text">
-          <div class="ai-title">AI TAHMİN</div>
-          <div class="ai-result">${pred.aiText}</div>
-          <div style="display:flex;gap:4px;margin-top:4px">
-            ${(()=>{const s=calcAIScore(m);const c=s.overall>=75?'badge-high':s.overall>=60?'badge-med':'badge-low';return `<span class="ai-value-badge ${c}">${s.overall>=75?'YÜKSEK':s.overall>=60?'ORTA':'DÜŞÜK'} GÜVEN</span>`;})()}
+          <div class="ai-title">AI TAHMİN — <span style="color:${confColor}">${aiResult} @${(m.odds||{})[aiResult]||'-'}</span></div>
+          <div class="ai-result" style="font-size:13px">${aiText}</div>
+          <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+            <span style="background:${confColor}20;color:${confColor};border:1px solid ${confColor}40;
+              border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700">
+              ${aiConf>=75?'🔥 YÜKSEK':aiConf>=60?'⚡ ORTA':'📌 DÜŞÜK'} GÜVEN</span>
+            <span style="background:rgba(255,215,0,0.1);color:var(--gold);border:1px solid rgba(255,215,0,0.3);
+              border-radius:4px;padding:2px 7px;font-size:9px">
+              xG ${hXG.toFixed(1)}-${aXG.toFixed(1)}</span>
+            ${ml?.h2hBias&&ml.h2hBias!=='Nötr'?`<span style="background:rgba(179,71,255,0.1);color:#b347ff;
+              border:1px solid rgba(179,71,255,0.3);border-radius:4px;padding:2px 7px;font-size:9px">
+              H2H: ${ml.h2hBias}</span>`:''}
           </div>
         </div>
-        <div style="text-align:center">
-          <div class="ai-conf">${pred.aiConf}%</div>
-          <div style="font-size:9px;color:var(--text2)">xG:${(m.stats&&m.stats.xg)?(m.stats.xg[0]+m.stats.xg[1]).toFixed(1):0}</div>
+        <div style="text-align:center;flex-shrink:0">
+          <div class="ai-conf" style="color:${confColor}">${aiConf}%</div>
+          <div style="font-size:9px;color:var(--text2)">güven</div>
         </div>
       </div>
+
+      <!-- GOL TAHMİN PİLLLERİ -->
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">
+        ${pills}
+      </div>
     </div>
+
     <button class="expand-btn" onclick="toggleDetail(${m.id})">DETAY & ANALİZ ▾</button>
     <div class="detail-panel" id="detail-${m.id}">
-      
-      <!-- STATS -->
+
+      <!-- LİG TABLOSU BAĞLAMI -->
+      <div style="background:rgba(0,0,0,0.2);border-radius:10px;padding:10px;margin-bottom:8px">
+        <div style="font-size:10px;color:var(--text2);font-weight:700;letter-spacing:1px;margin-bottom:8px">
+          🏆 LİG TABLOSU BAĞLAMI</div>
+        ${matchImportance?`<div style="background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.35);
+          border-radius:6px;padding:5px;text-align:center;font-size:11px;font-weight:700;
+          color:#ff6b35;margin-bottom:8px">${matchImportance}</div>`:''}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="background:${hZone.color}12;border:1px solid ${hZone.color}30;border-radius:8px;
+            padding:8px;text-align:center">
+            <div style="font-size:9px;color:var(--text2)">EV SAHİBİ</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;
+              color:${hZone.color}">${hPos}.</div>
+            <div style="font-size:9px;color:${hZone.color}">${hZone.label}</div>
+          </div>
+          <div style="background:${aZone.color}12;border:1px solid ${aZone.color}30;border-radius:8px;
+            padding:8px;text-align:center">
+            <div style="font-size:9px;color:var(--text2)">DEPLASMAN</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;
+              color:${aZone.color}">${aPos}.</div>
+            <div style="font-size:9px;color:${aZone.color}">${aZone.label}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- İÇ/DIŞ SAHA -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div style="background:${hVenueColor}12;border:1px solid ${hVenueColor}30;border-radius:8px;padding:8px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">🏠 İÇ SAHA</div>
+          <div style="font-size:12px;font-weight:700;color:${hVenueColor};margin-top:3px">${hVenueStr}</div>
+          <div style="font-size:9px;color:var(--text2)">${hWins}/5 galibiyet</div>
+        </div>
+        <div style="background:${aVenueColor}12;border:1px solid ${aVenueColor}30;border-radius:8px;padding:8px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">✈️ DEPLASMAN</div>
+          <div style="font-size:12px;font-weight:700;color:${aVenueColor};margin-top:3px">${aVenueStr}</div>
+          <div style="font-size:9px;color:var(--text2)">${aWins}/5 galibiyet</div>
+        </div>
+      </div>
+
+      <!-- STRATEJİ & MOTİVASYON -->
+      <div style="background:rgba(0,0,0,0.2);border-radius:10px;padding:10px;margin-bottom:8px">
+        <div style="font-size:10px;color:var(--text2);font-weight:700;letter-spacing:1px;margin-bottom:8px">
+          🎯 OYUN STRATEJİSİ & MOTİVASYON</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="background:rgba(0,229,255,0.06);border-radius:8px;padding:8px">
+            <div style="font-size:9px;color:var(--accent);font-weight:700">${m.home.substring(0,14)}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;margin:3px 0">${hFrm}</div>
+            <div style="font-size:9px;color:var(--text2)">${hWins>=3?'Yüksek Baskı + Hücum':hWins<=1?'Savunmacı Blok':'Dengeli Sistem'}</div>
+          </div>
+          <div style="background:rgba(255,59,92,0.06);border-radius:8px;padding:8px">
+            <div style="font-size:9px;color:#ff6b35;font-weight:700">${m.away.substring(0,14)}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;margin:3px 0">${aFrm}</div>
+            <div style="font-size:9px;color:var(--text2)">${aWins>=3?'Yüksek Baskı + Hücum':aWins<=1?'Savunmacı Blok':'Dengeli Sistem'}</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;
+          padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);margin-top:8px">
+          <span>⚡ Motivasyon: <b style="color:#00e5ff">${motivText}</b></span>
+          <span>🏥 Sakatlık: <b style="color:${injImpact>15?'#ff3b5c':injImpact>5?'#ff9800':'#00e676'}">${injImpact>0?'-'+injImpact+'% etki':'Tam Kadro'}</b></span>
+        </div>
+      </div>
+
+      <!-- HABERLER -->
+      ${newsHtml}
+
+      <!-- İSTATİSTİKLER -->
       <div class="toggle-header" onclick="toggleSection('stats-${m.id}')">
         <span class="toggle-title">📊 GELİŞMİŞ İSTATİSTİKLER</span>
         <span class="toggle-arrow" id="arrow-stats-${m.id}">▾</span>
@@ -6982,38 +7185,35 @@ function renderMatchCard(m) {
 
       <!-- H2H -->
       <div class="toggle-header" onclick="toggleSection('h2h-${m.id}')" style="margin-top:6px">
-        <span class="toggle-title">⚔️ KARŞILAŞMA GEÇMİŞİ</span>
+        <span class="toggle-title">⚔️ KARŞILAŞMA GEÇMİŞİ (${(m.h2h||[]).length} maç)</span>
         <span class="toggle-arrow" id="arrow-h2h-${m.id}">▾</span>
       </div>
       <div class="toggle-body" id="h2h-${m.id}">
         <div class="h2h-list">${h2hHtml}</div>
       </div>
 
-      <!-- TACTICS -->
+      <!-- TAKTİK -->
       <div class="toggle-header" onclick="toggleSection('tac-${m.id}')" style="margin-top:6px">
         <span class="toggle-title">🎯 TAKTİK & FORMASYON</span>
         <span class="toggle-arrow" id="arrow-tac-${m.id}">▾</span>
       </div>
       <div class="toggle-body" id="tac-${m.id}">
         <div style="display:flex;gap:8px;margin-bottom:10px">
-          <div style="flex:1;background:var(--surface2);border-radius:10px;padding:8px;text-align:center">
-            <div style="font-size:11px;color:var(--accent);font-weight:700">EV SAHİBİ</div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px">${(m.formation&&m.formation.home)||'4-4-2'}</div>
+          <div style="flex:1;background:var(--surface2);border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:10px;color:var(--accent);font-weight:700">EV SAHİBİ</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px">${hFrm}</div>
           </div>
-          <div style="flex:1;background:var(--surface2);border-radius:10px;padding:8px;text-align:center">
-            <div style="font-size:11px;color:var(--red);font-weight:700">DEPLASMAN</div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px">${(m.formation&&m.formation.away)||'4-4-2'}</div>
+          <div style="flex:1;background:var(--surface2);border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:10px;color:var(--red);font-weight:700">DEPLASMAN</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px">${aFrm}</div>
           </div>
         </div>
         ${renderPitch(m)}
-        <div style="background:var(--surface2);border-radius:10px;padding:10px;margin-top:8px;font-size:12px;line-height:1.6;color:var(--text2)">
-          💡 ${m.tactics}
-        </div>
       </div>
 
-      <!-- PLAYERS -->
+      <!-- OYUNCULAR -->
       <div class="toggle-header" onclick="toggleSection('pl-${m.id}')" style="margin-top:6px">
-        <span class="toggle-title">👥 OYUNCULAR & SAKATLIKLLAR</span>
+        <span class="toggle-title">👥 KADRO & SAKATLIKLLAR</span>
         <span class="toggle-arrow" id="arrow-pl-${m.id}">▾</span>
       </div>
       <div class="toggle-body" id="pl-${m.id}">
