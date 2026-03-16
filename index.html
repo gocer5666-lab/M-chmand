@@ -9238,11 +9238,16 @@ function renderBultenHTML(el, matches, isApiMode) {
           if(!ml) return '';
           const xgSig = calcXGSignalV3(m, ml);
           const sigColors = ['#607d8b','#8a9ab5','#ff9800','#00e5ff','#00e676','#ff3b5c'];
-          const kgPct   = ml.btts   || 0;
-          const u25Pct  = ml.over25  || 0;
-          const u35Pct  = ml.over35  || 0;
-          const iyPct   = (ml.iy&&ml.iy.ov05) ? Math.round(ml.iy.ov05*100) : Math.round((ml.homeXG+ml.awayXG)*18);
           const totalXG = (ml.homeXG||0) + (ml.awayXG||0);
+          const kgPct   = ml.btts > 0 ? ml.btts :
+            Math.min(90, Math.round((totalXG * 18) + ((m.homeGoals||1)>0.8&&(m.awayGoals||1)>0.8?15:0)));
+          const u25Pct  = ml.over25 > 0 ? ml.over25 :
+            Math.min(90, Math.round(totalXG>=2.5?65:totalXG>=2.0?50:35));
+          const u35Pct  = ml.over35 > 0 ? ml.over35 :
+            Math.min(80, Math.round(totalXG>=3.0?50:totalXG>=2.5?35:20));
+          const iyPct   = (ml.iy&&ml.iy.ov05) ? Math.round(ml.iy.ov05*100) :
+            Math.min(85, Math.round(totalXG*20+15));
+          const xgSignal = totalXG >= 2.5 || kgPct >= 65;
           const pill = (lbl, pct, bg, border, color, extra='') =>
             `<div onclick="addToCoupon(${m.id||0},'${lbl.replace(/[^a-z0-9]/gi,'_').toLowerCase()}',0,'${m.home} ${lbl}')"
               style="display:inline-flex;align-items:center;gap:3px;padding:3px 7px;
@@ -10179,13 +10184,26 @@ function renderMatchNewsBlock(m) {
 // YENİ: LİG TABLOSU POZİSYON ANALİZİ
 // ════════════════════════════════════════════════════════════════
 function renderPositionContext(m) {
-  const homePos = m.homePos || 10;
-  const awayPos = m.awayPos || 10;
+  // ELO + form bazlı pozisyon tahmini (statik pos yoksa)
+  function estimatePos(teamName, form, goals, conceded) {
+    const wins = (form||[]).filter(f=>f==='W').length;
+    const score = wins * 3 + goals - conceded;
+    if(score >= 9) return 2;
+    if(score >= 7) return 4;
+    if(score >= 5) return 7;
+    if(score >= 3) return 10;
+    if(score >= 1) return 14;
+    return 17;
+  }
+  const homePos = (m.homePos && m.homePos !== 10) ? m.homePos :
+    estimatePos(m.home, m.homeForm, m.homeGoals||1.2, m.homeConceded||1.2);
+  const awayPos = (m.awayPos && m.awayPos !== 10) ? m.awayPos :
+    estimatePos(m.away, m.awayForm, m.awayGoals||1.2, m.awayConceded||1.2);
   const getZone = pos => pos <= 4 ? {label:'Şampiyonlar Ligi Zonu', color:'#00e5ff'} :
-                         pos <= 6 ? {label:'Avrupa Zonu', color:'#00e676'} :
+                         pos <= 6 ? {label:'Avrupa Ligi Zonu', color:'#00e676'} :
                          pos >= 16 ? {label:'Küme Düşme Tehlikesi', color:'#ff3b5c'} :
                          pos >= 13 ? {label:'Alt Sıra', color:'#ff9800'} :
-                         {label:'Orta Sıra', color:'#8a9ab5'};
+                         {label:'Üst Yarı', color:'#8a9ab5'};
   const hZone = getZone(homePos);
   const aZone = getZone(awayPos);
   const importance = (homePos <= 4 && awayPos <= 4) ? 'ZİRVE DERBİSİ ⚡' :
@@ -10219,12 +10237,22 @@ function renderPositionContext(m) {
 // ════════════════════════════════════════════════════════════════
 function renderHomeAwayAnalysis(m, ml) {
   if(!ml) return '';
-  const homeVenue = ml.homeVenueAdv || 0;
-  const awayVenue = ml.awayVenueAdj || 0;
-  const homeStr  = homeVenue >= 10 ? 'Çok Güçlü Ev' : homeVenue >= 5 ? 'Güçlü Ev' : homeVenue >= 0 ? 'Orta Ev' : 'Zayıf Ev';
-  const awayStr  = awayVenue >= 8  ? 'İyi Deplasman' : awayVenue >= 3 ? 'Orta Dep.' : 'Zayıf Dep.';
-  const homeColor = homeVenue >= 10 ? '#00e676' : homeVenue >= 5 ? '#00e5ff' : homeVenue >= 0 ? '#ff9800' : '#ff3b5c';
-  const awayColor = awayVenue >= 8  ? '#00e676' : awayVenue >= 3 ? '#ff9800' : '#ff3b5c';
+  // Form bazlı iç/dış saha güç hesabı (0-100 arası)
+  const hWins = (m.homeForm||[]).filter(f=>f==='W').length;
+  const aWins = (m.awayForm||[]).filter(f=>f==='W').length;
+  const hGoalDiff = (m.homeGoals||1.2) - (m.homeConceded||1.2);
+  const aGoalDiff = (m.awayGoals||1.2) - (m.awayConceded||1.2);
+  const homeVenueRaw = ml.homeVenueAdv || 0;
+  const awayVenueRaw = ml.awayVenueAdj || 0;
+  // Eğer ml değerleri 0 ise form + gol farkından hesapla
+  const homeVenue = homeVenueRaw !== 0 ? homeVenueRaw :
+    Math.round((hWins * 4 + hGoalDiff * 3) * 1.5);
+  const awayVenue = awayVenueRaw !== 0 ? awayVenueRaw :
+    Math.round((aWins * 3 + aGoalDiff * 2) * 1.2);
+  const homeStr  = homeVenue >= 15 ? 'Çok Güçlü Ev' : homeVenue >= 8 ? 'Güçlü Ev' : homeVenue >= 2 ? 'Orta Ev' : homeVenue >= -3 ? 'Zayıf Ev' : 'Çok Zayıf Ev';
+  const awayStr  = awayVenue >= 12 ? 'İyi Deplasman' : awayVenue >= 5 ? 'Orta Dep.' : awayVenue >= -2 ? 'Zayıf Dep.' : 'Çok Zayıf Dep.';
+  const homeColor = homeVenue >= 15 ? '#00e676' : homeVenue >= 8 ? '#00e5ff' : homeVenue >= 2 ? '#ff9800' : '#ff3b5c';
+  const awayColor = awayVenue >= 12 ? '#00e676' : awayVenue >= 5 ? '#ff9800' : '#ff3b5c';
   return `
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
     <div style="background:${homeColor}12;border:1px solid ${homeColor}30;border-radius:6px;padding:6px;text-align:center">
@@ -10258,8 +10286,23 @@ function renderMotivationStrategy(m, ml) {
     '5-3-2': {style:'Baskı Savunma + Köşe Atakları', type:'Defansif'},
     '3-4-3': {style:'3 FW Baskısı + Yüksek Hat', type:'Çok Offansif'},
   };
-  const hForm = m.formation?.home || '4-4-2';
-  const aForm = m.formation?.away || '4-4-2';
+  // Formation çeşitlendirme — goals/conceded oranına göre
+  function smartFormation(goals, conceded, form) {
+    const wins = (form||[]).filter(f=>f==='W').length;
+    const gd = (goals||1.2) - (conceded||1.2);
+    if(gd > 1.2 && wins >= 3) return '4-3-3';
+    if(gd > 0.5 && wins >= 3) return '4-2-3-1';
+    if(gd < -0.8) return '5-4-1';
+    if(gd < -0.3 && wins <= 2) return '5-3-2';
+    if(wins <= 1) return '4-5-1';
+    return '4-4-2';
+  }
+  const hFormRaw = m.formation?.home;
+  const aFormRaw = m.formation?.away;
+  const hForm = (hFormRaw && hFormRaw !== '4-4-2') ? hFormRaw :
+    smartFormation(m.homeGoals, m.homeConceded, m.homeForm);
+  const aForm = (aFormRaw && aFormRaw !== '4-4-2') ? aFormRaw :
+    smartFormation(m.awayGoals, m.awayConceded, m.awayForm);
   const hStr = strategies[hForm] || {style:'Esnek Sistem', type:'Dengeli'};
   const aStr = strategies[aForm] || {style:'Esnek Sistem', type:'Dengeli'};
   const typeColor = t => t==='Çok Offansif'?'#ff3b5c':t==='Offansif'?'#ff9800':t==='Defansif'?'#00e5ff':'#00e676';
