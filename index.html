@@ -6607,16 +6607,20 @@ function renderMatches(leagueId='all') {
   });
 
   try {
-    // Canlı maçları en üste ayrı section olarak ekle
-    const liveList = list.filter(m => m.status === 'live');
+    // Canlı maçları en üste ayrı section — TÜM MATCHES'dan al (tarih filtresi yok)
+    const allLiveMatches = MATCHES.filter(m => m && m.status === 'live');
+    const liveList = allLiveMatches.length > 0 ? allLiveMatches : list.filter(m => m.status === 'live');
     let liveHtml = '';
     if(liveList.length > 0) {
-      liveHtml = `<div style="background:rgba(255,59,92,0.1);border-left:3px solid #ff3b5c;
-        padding:6px 14px;margin-bottom:4px;display:flex;align-items:center;gap:8px">
-        <div style="width:8px;height:8px;border-radius:50%;background:#ff3b5c;animation:pulse 1s infinite"></div>
+      liveHtml = `<div style="background:rgba(255,59,92,0.12);border-left:3px solid #ff3b5c;
+        padding:8px 14px;margin-bottom:6px;display:flex;align-items:center;gap:8px;
+        position:sticky;top:0;z-index:5">
+        <div style="width:8px;height:8px;border-radius:50%;background:#ff3b5c;animation:pulse 1s infinite;flex-shrink:0"></div>
         <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#ff3b5c">
-          CANLI MAÇLAR — ${liveList.length} MAÇ OYNANMAKTA</span>
-      </div>${liveList.map(m=>{ try{return renderMatchCard(m);}catch(e){return '';} }).join('')}`;
+          🔴 CANLI — ${liveList.length} MAÇ OYNANMAKTA</span>
+        <span style="margin-left:auto;font-size:10px;color:var(--text2)" id="liveCount">${liveList.length}</span>
+      </div>${liveList.map(m=>{ try{return renderMatchCard(m);}catch(e){return '';} }).join('')}
+      <div style="height:8px"></div>`;
     }
 
     container.innerHTML = liveHtml + sorted.map(lig => {
@@ -6903,21 +6907,32 @@ function renderMatchCard(m) {
 
   // ── POZİSYON (form bazlı tahmin) ──────────────────────────
   function estPos(form, goals, conc) {
-    const w = (form||[]).filter(f=>f==='W').length;
-    const d = (form||[]).filter(f=>f==='D').length;
+    const arr = form||[];
+    const w = arr.filter(f=>f==='W').length;
+    const d = arr.filter(f=>f==='D').length;
+    const l = arr.filter(f=>f==='L').length;
     const pts = w*3 + d;
-    const gd  = (goals||1.2) - (conc||1.2);
+    // gol verisi yoksa sadece puan kullan
+    const g = parseFloat(goals)||1.2;
+    const c = parseFloat(conc)||1.2;
+    const gd = g > 0 && c > 0 ? g - c : 0;
     const score = pts + gd;
-    if(score >= 11) return 1;
-    if(score >= 9)  return 3;
-    if(score >= 7)  return 5;
-    if(score >= 5)  return 8;
-    if(score >= 3)  return 11;
-    if(score >= 1)  return 14;
+    // 5 maçlık form: max pts=15, gd ortalama -2 ile +2
+    if(score >= 13) return 1;
+    if(score >= 11) return 2;
+    if(score >= 9)  return 4;
+    if(score >= 7)  return 6;
+    if(score >= 5)  return 9;
+    if(score >= 3)  return 12;
+    if(score >= 1)  return 15;
+    if(pts >= 3)    return 13; // en az 1 galibiyet
     return 17;
   }
-  const hPos = (m.homePos && m.homePos!==10) ? m.homePos : estPos(m.homeForm, m.homeGoals, m.homeConceded);
-  const aPos = (m.awayPos && m.awayPos!==10) ? m.awayPos : estPos(m.awayForm, m.awayGoals, m.awayConceded);
+  // homePos=10 ise statik default — form bazlı hesapla
+  const hPos = (m.homePos && m.homePos !== 10) ? m.homePos
+    : estPos(m.homeForm, m.homeGoals||m.homeAvgGoals, m.homeConceded||m.homeAvgConceded);
+  const aPos = (m.awayPos && m.awayPos !== 10) ? m.awayPos
+    : estPos(m.awayForm, m.awayGoals||m.awayAvgGoals, m.awayConceded||m.awayAvgConceded);
 
   function posZone(pos) {
     if(pos<=4)  return {label:'UCL Zonu',     color:'#00e5ff'};
@@ -6936,34 +6951,58 @@ function renderMatchCard(m) {
 
   // ── FORMASYON (akıllı) ────────────────────────────────────
   function smartForm(goals, conc, form) {
-    const w = (form||[]).filter(f=>f==='W').length;
-    const gd = (goals||1.2) - (conc||1.2);
-    if(gd > 1.0 && w>=3) return '4-3-3';
-    if(gd > 0.4 && w>=2) return '4-2-3-1';
-    if(gd < -1.0)         return '5-4-1';
-    if(gd < -0.3 && w<=2) return '5-3-2';
-    if(w <= 1)             return '4-5-1';
+    const arr = form||[];
+    const w = arr.filter(f=>f==='W').length;
+    const d = arr.filter(f=>f==='D').length;
+    const g = parseFloat(goals)||1.3;
+    const c = parseFloat(conc)||1.3;
+    const gd = g - c;
+    // Formasyon mantığı: gol farkı + galibiyet sayısına göre
+    if(w >= 4)             return '4-3-3';   // çok iyi form
+    if(gd > 0.8 && w >= 3) return '4-2-3-1'; // saldırgan
+    if(gd > 0.3 && w >= 2) return '4-3-3';
+    if(gd < -1.2)          return '5-4-1';   // savunmacı
+    if(gd < -0.5 && w <= 1) return '5-3-2';
+    if(w === 0 && d <= 1)   return '5-4-1';  // berbat form
+    if(w >= 2 && d >= 1)    return '4-4-2';
     return '4-4-2';
   }
   const hFormRaw = m.formation?.home;
   const aFormRaw = m.formation?.away;
-  const hFrm = (hFormRaw && hFormRaw !== '4-4-2') ? hFormRaw : smartForm(m.homeGoals, m.homeConceded, m.homeForm);
-  const aFrm = (aFormRaw && aFormRaw !== '4-4-2') ? aFormRaw : smartForm(m.awayGoals, m.awayConceded, m.awayForm);
+  const hFrm = (hFormRaw && hFormRaw !== '4-4-2') ? hFormRaw
+    : smartForm(m.homeGoals, m.homeConceded, m.homeForm);
+  const aFrm = (aFormRaw && aFormRaw !== '4-4-2') ? aFormRaw
+    : smartForm(m.awayGoals, m.awayConceded, m.awayForm);
 
   // ── İÇ/DIŞ SAHA ──────────────────────────────────────────
   const hWins = (m.homeForm||[]).filter(f=>f==='W').length;
   const aWins = (m.awayForm||[]).filter(f=>f==='W').length;
   const hGD   = (m.homeGoals||1.2) - (m.homeConceded||1.2);
   const aGD   = (m.awayGoals||1.2) - (m.awayConceded||1.2);
-  const hVenue = ml?.homeVenueAdv || Math.round((hWins*4 + hGD*3) * 1.5);
-  const aVenue = ml?.awayVenueAdj || Math.round((aWins*3 + aGD*2) * 1.2);
+  // ML venue değerleri (0 da gelebilir, null/undefined kontrolü)
+  const hVenueML = (ml && ml.homeVenueAdv != null) ? ml.homeVenueAdv : null;
+  const aVenueML = (ml && ml.awayVenueAdj != null) ? ml.awayVenueAdj : null;
+  const hVenue = (hVenueML !== null && hVenueML !== 0) ? hVenueML
+    : Math.round(hWins*5 + hGD*3 + (hWins>=3?5:0));
+  const aVenue = (aVenueML !== null && aVenueML !== 0) ? aVenueML
+    : Math.round(aWins*4 + aGD*2.5 + (aWins>=3?4:0));
   const hVenueStr   = hVenue>=15?'Çok Güçlü Ev':hVenue>=8?'Güçlü Ev':hVenue>=2?'Orta Ev':'Zayıf Ev';
   const aVenueStr   = aVenue>=12?'İyi Dep.':aVenue>=5?'Orta Dep.':'Zayıf Dep.';
   const hVenueColor = hVenue>=15?'#00e676':hVenue>=8?'#00e5ff':hVenue>=2?'#ff9800':'#ff3b5c';
   const aVenueColor = aVenue>=12?'#00e676':aVenue>=5?'#ff9800':'#ff3b5c';
 
   // ── MOTİVASYON ────────────────────────────────────────────
-  const motivText = ml?.motivText || (hWins>aWins?'Ev Takımı Motive':aWins>hWins?'Dep. Takımı Motive':'Dengeli');
+  // Motivasyon: form farkı + pozisyon + kritiklik
+  const motivCalc = (() => {
+    if(ml?.motivText && ml.motivText !== 'Dengeli') return ml.motivText;
+    const hMotiv = hWins*3 + (hPos<=4?3:0) + (isRelMatch&&hPos>=15?4:0);
+    const aMotiv = aWins*3 + (aPos<=4?3:0) + (isRelMatch&&aPos>=15?4:0);
+    if(hMotiv > aMotiv + 3) return '🔥 Ev Takımı Motive';
+    if(aMotiv > hMotiv + 3) return '✈️ Deplasman Motive';
+    if(isRelMatch) return '🆘 Her İki Takım da Kritik';
+    if(isTopMatch) return '⚡ Zirve Savaşı';
+    return '⚖️ Dengeli';
+  })();
   const injImpact = ml?.hInjImpact || 0;
 
   // ── H2H ──────────────────────────────────────────────────
@@ -7156,17 +7195,17 @@ function renderMatchCard(m) {
           <div style="background:rgba(0,229,255,0.06);border-radius:8px;padding:8px">
             <div style="font-size:9px;color:var(--accent);font-weight:700">${m.home.substring(0,14)}</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;margin:3px 0">${hFrm}</div>
-            <div style="font-size:9px;color:var(--text2)">${hWins>=3?'Yüksek Baskı + Hücum':hWins<=1?'Savunmacı Blok':'Dengeli Sistem'}</div>
+            <div style="font-size:9px;color:var(--text2)">${hFrm==='4-3-3'?'Yüksek Baskı + Kanat Oyunu':hFrm==='4-2-3-1'?'Kontrollü + Pas Oyunu':hFrm==='5-4-1'?'Derin Savunma + Kontr':hFrm==='5-3-2'?'Çift Stoper + Baskı':'Dengeli Blok'}</div>
           </div>
           <div style="background:rgba(255,59,92,0.06);border-radius:8px;padding:8px">
             <div style="font-size:9px;color:#ff6b35;font-weight:700">${m.away.substring(0,14)}</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;margin:3px 0">${aFrm}</div>
-            <div style="font-size:9px;color:var(--text2)">${aWins>=3?'Yüksek Baskı + Hücum':aWins<=1?'Savunmacı Blok':'Dengeli Sistem'}</div>
+            <div style="font-size:9px;color:var(--text2)">${aFrm==='4-3-3'?'Yüksek Baskı + Kanat Oyunu':aFrm==='4-2-3-1'?'Kontrollü + Pas Oyunu':aFrm==='5-4-1'?'Derin Savunma + Kontr':aFrm==='5-3-2'?'Çift Stoper + Baskı':'Dengeli Blok'}</div>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:10px;
           padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);margin-top:8px">
-          <span>⚡ Motivasyon: <b style="color:#00e5ff">${motivText}</b></span>
+          <span>⚡ Motivasyon: <b style="color:#00e5ff">${motivCalc}</b></span>
           <span>🏥 Sakatlık: <b style="color:${injImpact>15?'#ff3b5c':injImpact>5?'#ff9800':'#00e676'}">${injImpact>0?'-'+injImpact+'% etki':'Tam Kadro'}</b></span>
         </div>
       </div>
